@@ -9,4 +9,6 @@ jobPostRouter.post("/", jobPostController.create);
 jobPostRouter.put("/:id", jobPostController.update);
 jobPostRouter.delete("/:id", jobPostController.deleteJobPost);
 
+jobPostRouter.get("/by-employer/:employerId", jobPostController.getByEmployer);
+
 module.exports = jobPostRouter;

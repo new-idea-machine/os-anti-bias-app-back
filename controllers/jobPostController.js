@@ -47,4 +47,21 @@ const deleteJobPost = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getOne, create, update, deleteJobPost };
+const getByEmployer = async (req, res) => {
+  try {
+    const employerId = req.params.employerId;
+    const jobPosts = await JobPost.getByEmployer(employerId);
+    res.json(jobPosts);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+module.exports = {
+  getAll,
+  getOne,
+  create,
+  update,
+  deleteJobPost,
+  getByEmployer,
+};
