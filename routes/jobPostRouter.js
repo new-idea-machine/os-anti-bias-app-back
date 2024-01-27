@@ -7,6 +7,6 @@ jobPostRouter.get("/", jobPostController.getAll);
 jobPostRouter.get("/:id", jobPostController.getOne);
 jobPostRouter.post("/", jobPostController.create);
 jobPostRouter.put("/:id", jobPostController.update);
-jobPostRouter.delete("/:id", jobPostController.deleteJob);
+jobPostRouter.delete("/:id", jobPostController.deleteJobPost);
 
 module.exports = jobPostRouter;
