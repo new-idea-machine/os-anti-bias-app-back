@@ -1,9 +1,10 @@
 const { v4: uuidv4 } = require("uuid");
 require("dotenv").config();
 const mongoose = require("./db");
-const { create: createUser } = require("./models/users");
+const { create: createUser, User } = require("./models/users");
 const { create: createEmployer, Employer } = require("./models/employers");
 const { create: createJobPost } = require("./models/jobPosts");
+const { create: createResume } = require("./models/resumes");
 const { MONGO_URI } = process.env;
 
 const userData = [
@@ -282,6 +283,404 @@ const jobPostData = [
   },
 ];
 
+const resumeData = [
+  {
+    resume_id: uuidv4(),
+    user: 1,
+    title: "Frontend Developer",
+    summary:
+      "Creative frontend developer with a keen eye for design and user experience.",
+    skills: ["HTML", "CSS", "JavaScript", "React", "Vue.js"],
+    education: [
+      {
+        degree: "Bachelor of Arts in Web Design",
+        school: "Creative Institute",
+        major: "Web Design",
+        graduationYear: 2019,
+      },
+    ],
+    workExperience: [
+      {
+        jobTitle: "UI/UX Designer",
+        company: "DesignStudio",
+        location: "DesignCity",
+        startDate: "2020-02-15",
+        endDate: "2021-12-31",
+        responsibilities: [
+          "Designed and implemented user interfaces",
+          "Collaborated with development teams",
+        ],
+        achievements: [
+          "Redesigned website resulting in a 30% increase in user engagement",
+        ],
+      },
+    ],
+    projects: [
+      {
+        projectName: "Portfolio Website",
+        description:
+          "Developed a personal portfolio website showcasing design and development projects.",
+        rolesResponsibilities: ["Designed and implemented the entire website"],
+        technologiesUsed: ["React", "CSS"],
+      },
+    ],
+    certifications: [
+      {
+        certificationName: "UI/UX Design Certification",
+        issuingOrganization: "Design Academy",
+        dateEarned: "2020-06-10",
+      },
+    ],
+    languages: [
+      {
+        languageName: "JavaScript",
+        proficiencyLevel: "Advanced",
+      },
+      {
+        languageName: "CSS",
+        proficiencyLevel: "Advanced",
+      },
+      {
+        languageName: "Vue.js",
+        proficiencyLevel: "Intermediate",
+      },
+    ],
+    references: [
+      {
+        referenceName: "Emily Johnson",
+        relationship: "Former Manager",
+        contactInformation: "emily.johnson@example.com",
+      },
+    ],
+    contactInformation: {
+      phoneNumber: "+9876543210",
+      emailAddress: "john.smith@example.com",
+      linkedInProfile: "https://www.linkedin.com/in/johnsmith",
+      otherSocialMedia: "https://github.com/johnsmith",
+    },
+  },
+  {
+    resume_id: uuidv4(),
+    user: 2,
+    title: "Data Scientist",
+    summary:
+      "Data scientist with expertise in machine learning and statistical analysis.",
+    skills: ["Python", "R", "Machine Learning", "Data Analysis", "SQL"],
+    education: [
+      {
+        degree: "Master of Science in Data Science",
+        school: "Data University",
+        major: "Data Science",
+        graduationYear: 2022,
+      },
+    ],
+    workExperience: [
+      {
+        jobTitle: "Data Analyst",
+        company: "DataTech",
+        location: "DataCity",
+        startDate: "2021-03-01",
+        endDate: "2022-11-30",
+        responsibilities: [
+          "Conducted data analysis and reporting",
+          "Developed predictive models",
+        ],
+        achievements: ["Improved data processing efficiency by 25%"],
+      },
+    ],
+    projects: [
+      {
+        projectName: "Predictive Analytics for Sales",
+        description:
+          "Developed a predictive model for forecasting sales based on historical data.",
+        rolesResponsibilities: [
+          "Data preprocessing",
+          "Model training and evaluation",
+        ],
+        technologiesUsed: ["Python", "Scikit-learn", "Pandas"],
+      },
+    ],
+    certifications: [
+      {
+        certificationName: "Certified Data Scientist",
+        issuingOrganization: "Data Science Certification Institute",
+        dateEarned: "2022-05-20",
+      },
+    ],
+    languages: [
+      {
+        languageName: "Python",
+        proficiencyLevel: "Advanced",
+      },
+      {
+        languageName: "R",
+        proficiencyLevel: "Intermediate",
+      },
+      {
+        languageName: "SQL",
+        proficiencyLevel: "Intermediate",
+      },
+    ],
+    references: [
+      {
+        referenceName: "Dr. Sarah Davis",
+        relationship: "Mentor",
+        contactInformation: "sarah.davis@example.com",
+      },
+    ],
+    contactInformation: {
+      phoneNumber: "+1231234567",
+      emailAddress: "jane.doe@example.com",
+      linkedInProfile: "https://www.linkedin.com/in/janedoe",
+      otherSocialMedia: "https://twitter.com/janedoe",
+    },
+  },
+  {
+    resume_id: uuidv4(),
+    user: 3,
+    title: "Marketing Specialist",
+    summary:
+      "Results-driven marketing specialist with a focus on digital marketing and content creation.",
+    skills: [
+      "Digital Marketing",
+      "Content Strategy",
+      "Social Media Management",
+      "SEO",
+      "Email Marketing",
+    ],
+    education: [
+      {
+        degree: "Bachelor of Business Administration",
+        school: "Marketing University",
+        major: "Marketing",
+        graduationYear: 2018,
+      },
+    ],
+    workExperience: [
+      {
+        jobTitle: "Digital Marketing Coordinator",
+        company: "DigitalHub",
+        location: "MarketingCity",
+        startDate: "2019-02-01",
+        endDate: "2022-09-30",
+        responsibilities: [
+          "Developed and implemented digital marketing campaigns",
+          "Managed social media accounts",
+        ],
+        achievements: [
+          "Increased website traffic by 40% through SEO optimization",
+        ],
+      },
+    ],
+    projects: [
+      {
+        projectName: "Social Media Campaign",
+        description:
+          "Led a successful social media campaign to increase brand awareness.",
+        rolesResponsibilities: [
+          "Content creation",
+          "Engagement tracking and analysis",
+        ],
+        technologiesUsed: ["Social Media Platforms", "Analytics Tools"],
+      },
+    ],
+    certifications: [
+      {
+        certificationName: "Digital Marketing Certification",
+        issuingOrganization: "Digital Marketing Institute",
+        dateEarned: "2020-08-15",
+      },
+    ],
+    languages: [
+      {
+        languageName: "Digital Marketing",
+        proficiencyLevel: "Advanced",
+      },
+      {
+        languageName: "Content Strategy",
+        proficiencyLevel: "Intermediate",
+      },
+    ],
+    references: [
+      {
+        referenceName: "Alex Johnson",
+        relationship: "Supervisor",
+        contactInformation: "alex.johnson@example.com",
+      },
+    ],
+    contactInformation: {
+      phoneNumber: "+9876543210",
+      emailAddress: "mary.smith@example.com",
+      linkedInProfile: "https://www.linkedin.com/in/marysmith",
+      otherSocialMedia: "https://www.instagram.com/marysmith",
+    },
+  },
+  {
+    resume_id: uuidv4(),
+    user: 4,
+    title: "UX/UI Designer",
+    summary:
+      "Passionate UX/UI designer with a focus on creating delightful and intuitive user experiences.",
+    skills: [
+      "User Experience Design",
+      "User Interface Design",
+      "Wireframing",
+      "Prototyping",
+      "Adobe XD",
+    ],
+    education: [
+      {
+        degree: "Bachelor of Fine Arts in Graphic Design",
+        school: "Design Institute",
+        major: "Graphic Design",
+        graduationYear: 2019,
+      },
+    ],
+    workExperience: [
+      {
+        jobTitle: "UX/UI Designer",
+        company: "DesignStudio",
+        location: "CreativeCity",
+        startDate: "2020-01-15",
+        endDate: "2022-10-31",
+        responsibilities: [
+          "Designed and implemented user interfaces for web and mobile",
+          "Conducted user research",
+        ],
+        achievements: [
+          "Streamlined the onboarding process resulting in a 25% increase in user satisfaction",
+        ],
+      },
+    ],
+    projects: [
+      {
+        projectName: "Mobile App Redesign",
+        description:
+          "Led the redesign of a mobile app to enhance user experience and engagement.",
+        rolesResponsibilities: [
+          "Created wireframes and prototypes",
+          "Collaborated with development teams",
+        ],
+        technologiesUsed: ["Adobe XD", "Sketch"],
+      },
+    ],
+    certifications: [
+      {
+        certificationName: "UX Design Certification",
+        issuingOrganization: "UX Design Institute",
+        dateEarned: "2021-05-20",
+      },
+    ],
+    languages: [
+      {
+        languageName: "User Experience Design",
+        proficiencyLevel: "Advanced",
+      },
+      {
+        languageName: "Wireframing",
+        proficiencyLevel: "Intermediate",
+      },
+      {
+        languageName: "Prototyping",
+        proficiencyLevel: "Intermediate",
+      },
+    ],
+    references: [
+      {
+        referenceName: "Mark Thompson",
+        relationship: "Creative Director",
+        contactInformation: "mark.thompson@example.com",
+      },
+    ],
+    contactInformation: {
+      phoneNumber: "+9876543210",
+      emailAddress: "alice.smith@example.com",
+      linkedInProfile: "https://www.linkedin.com/in/alicesmith",
+      otherSocialMedia: "https://www.behance.net/alicesmith",
+    },
+  },
+  {
+    resume_id: uuidv4(),
+    user: 5,
+    title: "Project Manager",
+    summary:
+      "Dedicated project manager with a proven track record of successfully delivering projects on time and within budget.",
+    skills: [
+      "Project Management",
+      "Scrum",
+      "Agile Methodology",
+      "Risk Management",
+      "Communication",
+    ],
+    education: [
+      {
+        degree: "Master of Business Administration",
+        school: "Business University",
+        major: "Business Administration",
+        graduationYear: 2020,
+      },
+    ],
+    workExperience: [
+      {
+        jobTitle: "Project Manager",
+        company: "TechProjects",
+        location: "ProjectCity",
+        startDate: "2021-02-01",
+        endDate: "2022-12-31",
+        responsibilities: [
+          "Led project planning and execution",
+          "Collaborated with cross-functional teams",
+        ],
+        achievements: [
+          "Completed a critical project ahead of schedule with 0% budget variance",
+        ],
+      },
+    ],
+    projects: [
+      {
+        projectName: "Software Implementation",
+        description:
+          "Managed the end-to-end implementation of a new software system for the organization.",
+        rolesResponsibilities: [
+          "Developed project timelines and milestones",
+          "Mitigated project risks",
+        ],
+        technologiesUsed: ["Project Management Tools", "Scrum"],
+      },
+    ],
+    certifications: [
+      {
+        certificationName: "Project Management Professional (PMP)",
+        issuingOrganization: "Project Management Institute",
+        dateEarned: "2021-07-15",
+      },
+    ],
+    languages: [
+      {
+        languageName: "Project Management",
+        proficiencyLevel: "Advanced",
+      },
+      {
+        languageName: "Scrum",
+        proficiencyLevel: "Intermediate",
+      },
+    ],
+    references: [
+      {
+        referenceName: "David Miller",
+        relationship: "Senior Manager",
+        contactInformation: "david.miller@example.com",
+      },
+    ],
+    contactInformation: {
+      phoneNumber: "+1234567890",
+      emailAddress: "john.jones@example.com",
+      linkedInProfile: "https://www.linkedin.com/in/johnjones",
+      otherSocialMedia: "https://twitter.com/johnjones",
+    },
+  },
+];
+
 const preload = async () => {
   try {
     console.log("Establishing database connection");
@@ -302,6 +701,10 @@ const preload = async () => {
     console.log("Dropping the 'jobPosts' collection");
     await mongoose.connection.collections.jobposts.drop();
     console.log("The 'jobPosts' collection dropped");
+
+    console.log("Dropping the 'resumes' collection");
+    await mongoose.connection.collections.resumes.drop();
+    console.log("The 'resumes' collection dropped");
 
     console.log("Seeding data");
     await Promise.all([
@@ -325,6 +728,17 @@ const preload = async () => {
 
     await Promise.all(
       jobPostDataWithObjectId.map((jobPost) => createJobPost(jobPost))
+    );
+
+    const createdUsers = await User.find();
+
+    const resumeDataWithObjectId = resumeData.map((resume, index) => ({
+      ...resume,
+      user: createdUsers[index]._id,
+    }));
+
+    await Promise.all(
+      resumeDataWithObjectId.map((resume) => createResume(resume))
     );
 
     console.log("🌱🌱 Data seeded successfully! 🌱🌱");
