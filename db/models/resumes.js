@@ -91,8 +91,8 @@ const getAll = async () => {
 
 const getOne = async (id) => {
   try {
-    const Resume = await Resume.findById(id);
-    return Resume;
+    const resume = await Resume.findById(id);
+    return resume;
   } catch (error) {
     return error;
   }
@@ -100,8 +100,8 @@ const getOne = async (id) => {
 
 const create = async (body) => {
   try {
-    const Resume = await Resume.create(body);
-    return Resume;
+    const resume = await Resume.create(body);
+    return resume;
   } catch (error) {
     return error;
   }
