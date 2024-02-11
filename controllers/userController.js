@@ -47,4 +47,14 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getOne, create, update, deleteUser };
+const login = async (req, res) => {
+  try {
+    const user = await User.login(req.body.username, req.body.password);
+
+    res.send(user);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+module.exports = { getAll, getOne, create, update, deleteUser, login };

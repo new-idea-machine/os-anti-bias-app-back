@@ -1,5 +1,6 @@
 const mongoose = require("../db");
 const { v4: uuidv4 } = require("uuid");
+const { generateToken } = require("../../utils/auth");
 
 const userSchema = new mongoose.Schema({
   user_id: {
@@ -79,7 +80,8 @@ const getOne = async (id) => {
 const create = async (body) => {
   try {
     const user = await User.create(body);
-    return user;
+    const token = generateToken(user);
+    return { user, token };
   } catch (error) {
     return error;
   }
@@ -113,4 +115,24 @@ const deleteUser = async (id) => {
   }
 };
 
-module.exports = { getAll, getOne, create, update, deleteUser, User };
+const login = async (username, password) => {
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    if (user.password !== password) {
+      throw new Error("Invalid password");
+    }
+
+    const token = generateToken(user);
+
+    return { user, token };
+  } catch (error) {
+    return error;
+  }
+};
+
+module.exports = { getAll, getOne, create, update, deleteUser, User, login };
