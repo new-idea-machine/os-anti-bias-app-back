@@ -20,7 +20,7 @@ const getOne = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const user = await User.create(req.body.user);
+    const user = await User.create(req.body);
     res.send(user);
   } catch (error) {
     res.status(500).send(error);
@@ -49,8 +49,8 @@ const deleteUser = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const user = await User.login(req.body.username, req.body.password);
-
+    const { username, password } = req.body.user;
+    const user = await User.login(username, password);
     res.send(user);
   } catch (error) {
     res.status(500).send(error);
