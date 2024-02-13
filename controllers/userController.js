@@ -20,7 +20,7 @@ const getOne = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const user = await User.create(req.body);
+    const user = await User.create(req.body.user);
     res.send(user);
   } catch (error) {
     res.status(500).send(error);
