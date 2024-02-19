@@ -1,6 +1,6 @@
 const mongoose = require("../db");
 const { v4: uuidv4 } = require("uuid");
-const { generateToken } = require("../../utils/auth");
+const { generateToken } = require("../../utils/token");
 
 const userSchema = new mongoose.Schema({
   user_id: {
@@ -76,12 +76,28 @@ const getOne = async (id) => {
     return error;
   }
 };
+const getCurrentUser = async (id) => {
+  try {
+    const user = await User.findById(id);
+
+    return {
+      email: user.email,
+      username: user.username,
+      token: generateToken(user),
+    };
+  } catch (error) {
+    return error;
+  }
+};
 
 const create = async (body) => {
   try {
-    const user = await User.create(body);
-    const token = generateToken(user);
-    return { user, token };
+    const user = await User.create(body.user);
+
+    return {
+      ...user,
+      token: generateToken(user),
+    };
   } catch (error) {
     return error;
   }
@@ -127,12 +143,23 @@ const login = async (username, password) => {
       throw new Error("Invalid password");
     }
 
-    const token = generateToken(user);
-
-    return { user, token };
+    return {
+      email: user.email,
+      username: user.username,
+      token: generateToken(user),
+    };
   } catch (error) {
     return error;
   }
 };
 
-module.exports = { getAll, getOne, create, update, deleteUser, User, login };
+module.exports = {
+  getAll,
+  getOne,
+  create,
+  update,
+  deleteUser,
+  User,
+  login,
+  getCurrentUser,
+};
