@@ -92,8 +92,7 @@ const getCurrentUser = async (id) => {
 
 const create = async (body) => {
   try {
-    const user = await User.create(body.user);
-
+    const user = await User.create(body);
     return {
       ...user,
       token: generateToken(user),
