@@ -67,7 +67,7 @@ const getAll = async () => {
 
 const getOne = async (id) => {
   try {
-    const employer = await Employer.findById(id);
+    const employer = await Employer.findOne({ employer_id: id });
     return employer;
   } catch (error) {
     return error;
