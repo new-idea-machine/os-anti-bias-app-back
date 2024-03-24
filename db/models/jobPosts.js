@@ -84,7 +84,7 @@ const getAll = async () => {
 
 const getOne = async (id) => {
   try {
-    const jobPost = await JobPost.findById(id);
+    const jobPost = await JobPost.findOne({ job_post_id: id });
     return jobPost;
   } catch (error) {
     return error;
