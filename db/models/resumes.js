@@ -9,8 +9,7 @@ const resumeSchema = new mongoose.Schema({
     unique: true,
   },
   user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
     required: true,
   },
   title: {

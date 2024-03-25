@@ -712,34 +712,32 @@ const preload = async () => {
       ...employerData.map((employer) => createEmployer(employer)),
     ]);
 
-    //Store Employer seed data from database (for ObjectId)
+    //Store Employer seed data from database
     const createdEmployers = await Employer.find();
 
     // Utility function to get a random employer ID
     const getRandomEmployerId = (employers) => {
       const randomIndex = Math.floor(Math.random() * employers.length);
-      return employers[randomIndex]._id;
+      return employers[randomIndex].employer_id;
     };
 
-    const jobPostDataWithObjectId = jobPostData.map((jobPost) => ({
+    const jobPostDataWithId = jobPostData.map((jobPost) => ({
       ...jobPost,
       employer: getRandomEmployerId(createdEmployers),
     }));
 
     await Promise.all(
-      jobPostDataWithObjectId.map((jobPost) => createJobPost(jobPost))
+      jobPostDataWithId.map((jobPost) => createJobPost(jobPost))
     );
 
     const createdUsers = await User.find();
 
-    const resumeDataWithObjectId = resumeData.map((resume, index) => ({
+    const resumeDataWithId = resumeData.map((resume, index) => ({
       ...resume,
-      user: createdUsers[index]._id,
+      user: createdUsers[index].user_id,
     }));
 
-    await Promise.all(
-      resumeDataWithObjectId.map((resume) => createResume(resume))
-    );
+    await Promise.all(resumeDataWithId.map((resume) => createResume(resume)));
 
     console.log("🌱🌱 Data seeded successfully! 🌱🌱");
   } catch (error) {

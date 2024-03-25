@@ -3,8 +3,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const jobPostSchema = new mongoose.Schema({
   employer: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Employer",
+    type: String,
     required: true,
   },
   job_post_id: {
