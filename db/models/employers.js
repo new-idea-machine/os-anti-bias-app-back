@@ -85,7 +85,7 @@ const create = async (body) => {
 
 const update = async (id, body) => {
   try {
-    const updatedEmployer = await Employer.findByIdAndUpdate(
+    const updatedEmployer = await Employer.findOneAndUpdate(
       { employer_id: id },
       { ...body, updatedAt: new Date() },
       { new: true }
