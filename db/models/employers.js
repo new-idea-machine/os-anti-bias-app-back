@@ -86,7 +86,7 @@ const create = async (body) => {
 const update = async (id, body) => {
   try {
     const updatedEmployer = await Employer.findByIdAndUpdate(
-      id,
+      { employer_id: id },
       { ...body, updatedAt: new Date() },
       { new: true }
     );
@@ -99,7 +99,9 @@ const update = async (id, body) => {
 
 const deleteEmployer = async (id) => {
   try {
-    const deletedEmployer = await Employer.findOneAndDelete(id);
+    const deletedEmployer = await Employer.findOneAndDelete({
+      employer_id: id,
+    });
 
     if (!deletedEmployer) {
       throw new Error("Employer item not found");
