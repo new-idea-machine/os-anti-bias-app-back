@@ -78,7 +78,7 @@ const getOne = async (id) => {
 };
 const getCurrentUser = async (id) => {
   try {
-    const user = await User.findById(id);
+    const user = await User.findOne({ user_id: id });
 
     return {
       email: user.email,

@@ -134,8 +134,8 @@ const deleteResume = async (id) => {
 
 const getByUser = async (id) => {
   try {
-    const resumes = await Resume.find({ user: id });
-    return resumes;
+    const resume = await Resume.findOne({ user: id });
+    return resume;
   } catch (error) {
     return error;
   }

@@ -1,4 +1,5 @@
 const Resume = require("../db/models/resumes");
+const jwt = require("jsonwebtoken");
 
 const getAll = async (req, res) => {
   try {
@@ -57,6 +58,22 @@ const getByUser = async (req, res) => {
   }
 };
 
+const getCurrentUserResume = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const userId = decoded.user.id;
+    console.log(userId);
+    const resume = await Resume.getByUser(userId);
+    console.log(resume);
+    res.json(resume);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 module.exports = {
   getAll,
   getOne,
@@ -64,4 +81,5 @@ module.exports = {
   update,
   deleteResume,
   getByUser,
+  getCurrentUserResume,
 };
