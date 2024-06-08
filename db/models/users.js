@@ -70,7 +70,7 @@ const getAll = async () => {
 
 const getOne = async (id) => {
   try {
-    const user = await User.findById(id);
+    const user = await User.findOne({ user_id: id });
     return user;
   } catch (error) {
     return error;
@@ -104,8 +104,8 @@ const create = async (body) => {
 
 const update = async (id, body) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
+    const updatedUser = await User.findOneAndUpdate(
+      { user_id: id },
       { ...body, updatedAt: new Date() },
       { new: true }
     );
@@ -118,7 +118,7 @@ const update = async (id, body) => {
 
 const deleteUser = async (id) => {
   try {
-    const deletedUser = await User.findByIdAndRemove(id);
+    const deletedUser = await User.findOneAndDelete({ user_id: id });
 
     if (!deletedUser) {
       throw new Error("User item not found");
