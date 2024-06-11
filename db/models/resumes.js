@@ -108,8 +108,8 @@ const create = async (body) => {
 
 const update = async (id, body) => {
   try {
-    const updatedResume = await Resume.findByIdAndUpdate(
-      id,
+    const updatedResume = await Resume.findOneAndUpdate(
+      { resume_id: id },
       { ...body, updatedAt: new Date() },
       { new: true }
     );
