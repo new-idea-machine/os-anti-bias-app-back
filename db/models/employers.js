@@ -16,7 +16,7 @@ const employerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  password: {
+  user: {
     type: String,
     required: true,
   },

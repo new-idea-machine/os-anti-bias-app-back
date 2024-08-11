@@ -17,6 +17,7 @@ const userData = [
     password: "password123",
     country: "USA",
     city: "New York",
+    role: "",
   },
   {
     user_id: uuidv4(),
@@ -27,6 +28,7 @@ const userData = [
     password: "securepass",
     country: "Canada",
     city: "Toronto",
+    role: "",
   },
   {
     user_id: uuidv4(),
@@ -37,6 +39,7 @@ const userData = [
     password: "alicepass",
     country: "UK",
     city: "London",
+    role: "",
   },
   {
     user_id: uuidv4(),
@@ -47,6 +50,7 @@ const userData = [
     password: "bobpass",
     country: "Australia",
     city: "Sydney",
+    role: "",
   },
   {
     user_id: uuidv4(),
@@ -57,6 +61,7 @@ const userData = [
     password: "evapass",
     country: "Germany",
     city: "Berlin",
+    role: "",
   },
 ];
 
@@ -66,6 +71,7 @@ const employerData = [
     employer_name: "ABC Company",
     username: "abc_company",
     password: "password123",
+    user: 1,
     description: "A leading company in the industry",
     number_of_employees: 100,
     contact_name: "John Doe",
@@ -79,6 +85,7 @@ const employerData = [
     employer_name: "XYZ Corporation",
     username: "xyz_corp",
     password: "securepassword456",
+    user: 1,
     description: "Innovative solutions for a changing world",
     number_of_employees: 500,
     contact_name: "Jane Smith",
@@ -92,6 +99,7 @@ const employerData = [
     employer_name: "Tech Innovators Ltd",
     username: "tech_innovators",
     password: "innovate2023",
+    user: 1,
     description: "Pioneering technology solutions for the future",
     number_of_employees: 200,
     contact_name: "Mark Johnson",
