@@ -113,4 +113,21 @@ const deleteEmployer = async (id) => {
   }
 };
 
-module.exports = { getAll, getOne, create, update, deleteEmployer, Employer };
+const getByUser = async (id) => {
+  try {
+    const employer = await Employer.findOne({ user: id });
+    return employer;
+  } catch (error) {
+    return error;
+  }
+};
+
+module.exports = {
+  getAll,
+  getOne,
+  create,
+  update,
+  deleteEmployer,
+  Employer,
+  getByUser,
+};

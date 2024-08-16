@@ -1,4 +1,5 @@
 const Employer = require("../db/models/employers");
+const jwt = require("jsonwebtoken");
 
 const getAll = async (req, res) => {
   try {
@@ -47,4 +48,26 @@ const deleteEmployer = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getOne, create, update, deleteEmployer };
+const getCurrentUserEmployerInfo = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const userId = decoded.user.id;
+    const employer = await Employer.getByUser(userId);
+    console.log(employer);
+    res.json(employer);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+module.exports = {
+  getAll,
+  getOne,
+  create,
+  update,
+  deleteEmployer,
+  getCurrentUserEmployerInfo,
+};

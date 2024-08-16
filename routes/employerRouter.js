@@ -2,6 +2,10 @@ const { Router } = require("express");
 const employerController = require("../controllers/employerController");
 const employerRouter = Router();
 
+employerRouter.get(
+  "/current-user/",
+  employerController.getCurrentUserEmployerInfo
+);
 employerRouter.get("/", employerController.getAll);
 employerRouter.get("/:id", employerController.getOne);
 employerRouter.post("/", employerController.create);
