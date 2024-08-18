@@ -87,6 +87,7 @@ const getCurrentUser = async (id) => {
       email: user.email,
       username: user.username,
       token: generateToken(user),
+      role: user.role,
     };
   } catch (error) {
     return error;
