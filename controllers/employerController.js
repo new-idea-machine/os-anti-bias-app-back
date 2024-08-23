@@ -21,7 +21,15 @@ const getOne = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const employer = await Employer.create(req.body);
+    const token = req.body.user;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const userId = decoded.user.id;
+    const newEmployer = {
+      ...req.body,
+      user: userId,
+    };
+    const employer = await Employer.create(newEmployer);
     res.send(employer);
   } catch (error) {
     res.status(500).send(error);

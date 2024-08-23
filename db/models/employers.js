@@ -14,7 +14,6 @@ const employerSchema = new mongoose.Schema({
   },
   username: {
     type: String,
-    required: true,
   },
   user: {
     type: String,
