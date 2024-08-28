@@ -21,7 +21,16 @@ const getOne = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const resume = await Resume.create(req.body);
+    const token = req.body.user;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const userId = decoded.user.id;
+    const newResume = {
+      ...req.body,
+      user: userId,
+    };
+
+    const resume = await Resume.create(newResume);
     res.send(resume);
   } catch (error) {
     res.status(500).send(error);
