@@ -1,4 +1,5 @@
 const JobPost = require("../db/models/jobPosts");
+const jwt = require("jsonwebtoken");
 
 const getAll = async (req, res) => {
   try {
@@ -57,6 +58,23 @@ const getByEmployer = async (req, res) => {
   }
 };
 
+const canEdit = async (req, res) => {
+  try {
+    const jobPost = await JobPost.getOne(req.params.jobPostId);
+
+    const token = req.body.user;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.user.id;
+
+    const canEdit = jobPost.user === userId;
+
+    return res.json({ canEdit });
+  } catch (error) {
+    console.error("Error checking edit permission:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   getAll,
   getOne,
@@ -64,4 +82,5 @@ module.exports = {
   update,
   deleteJobPost,
   getByEmployer,
+  canEdit,
 };
