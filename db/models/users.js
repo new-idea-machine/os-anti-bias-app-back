@@ -96,7 +96,6 @@ const getCurrentUser = async (id) => {
 
 const create = async (body) => {
   try {
-    console.log(body, "🚨");
     const user = await User.create(body.user);
     return {
       ...user,

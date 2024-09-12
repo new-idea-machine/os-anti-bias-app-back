@@ -114,6 +114,7 @@ const jobPostData = [
   {
     job_post_id: uuidv4(),
     employer: 1,
+    user: 1,
     start_date: "2023-01-10",
     end_date: "2023-01-31",
     job_title: "Software Developer",
@@ -132,6 +133,7 @@ const jobPostData = [
   {
     job_post_id: uuidv4(),
     employer: 1,
+    user: 1,
     start_date: "2023-02-05",
     end_date: "2023-02-28",
     job_title: "Data Scientist",
@@ -149,6 +151,7 @@ const jobPostData = [
   {
     job_post_id: uuidv4(),
     employer: 2,
+    user: 1,
     start_date: "2023-02-12",
     end_date: "2023-03-10",
     job_title: "UX/UI Designer",
@@ -166,6 +169,7 @@ const jobPostData = [
   {
     job_post_id: uuidv4(),
     employer: 2,
+    user: 1,
     start_date: "2023-03-01",
     end_date: "2023-03-15",
     job_title: "Network Engineer",
@@ -183,6 +187,7 @@ const jobPostData = [
   {
     job_post_id: uuidv4(),
     employer: 2,
+    user: 1,
     start_date: "2023-03-10",
     end_date: "2023-04-05",
     job_title: "Marketing Specialist",
@@ -201,6 +206,7 @@ const jobPostData = [
   {
     job_post_id: uuidv4(),
     employer: 1,
+    user: 1,
     start_date: "2023-04-01",
     end_date: "2023-04-30",
     job_title: "Software Engineer",
@@ -219,6 +225,7 @@ const jobPostData = [
   {
     job_post_id: uuidv4(),
     employer: 3,
+    user: 1,
     start_date: "2023-05-10",
     end_date: "2023-06-10",
     job_title: "Graphic Designer",
@@ -237,6 +244,7 @@ const jobPostData = [
   {
     job_post_id: uuidv4(),
     employer: 3,
+    user: 1,
     start_date: "2023-06-15",
     end_date: "2023-07-15",
     job_title: "Financial Analyst",
@@ -255,6 +263,7 @@ const jobPostData = [
   {
     job_post_id: uuidv4(),
     employer: 3,
+    user: 1,
     start_date: "2023-07-01",
     end_date: "2023-07-31",
     job_title: "Customer Support Specialist",
@@ -273,6 +282,7 @@ const jobPostData = [
   {
     job_post_id: uuidv4(),
     employer: 1,
+    user: 1,
     start_date: "2023-08-05",
     end_date: "2023-08-31",
     job_title: "Quality Assurance Engineer",
@@ -715,10 +725,29 @@ const preload = async () => {
     console.log("The 'resumes' collection dropped");
 
     console.log("Seeding data");
-    await Promise.all([
-      ...userData.map((user) => createUser(user)),
-      ...employerData.map((employer) => createEmployer(employer)),
-    ]);
+
+    await Promise.all(userData.map((user) => createUser({ user: user })));
+
+    const createdUsers = await User.find();
+
+    const getRandomUserId = (users) => {
+      const randomIndex = Math.floor(Math.random() * users.length);
+
+      return users[randomIndex].user_id;
+    };
+
+    const employerDataWithUserId = employerData.map((employer) => {
+      return {
+        ...employer,
+        user: getRandomUserId(createdUsers),
+      };
+    });
+
+    console.log(employerDataWithUserId);
+
+    await Promise.all(
+      employerDataWithUserId.map((employer) => createEmployer(employer))
+    );
 
     //Store Employer seed data from database
     const createdEmployers = await Employer.find();
@@ -726,19 +755,25 @@ const preload = async () => {
     // Utility function to get a random employer ID
     const getRandomEmployerId = (employers) => {
       const randomIndex = Math.floor(Math.random() * employers.length);
-      return employers[randomIndex].employer_id;
+      return {
+        employer_id: employers[randomIndex].employer_id,
+        user_id: employers[randomIndex].user,
+      };
     };
 
-    const jobPostDataWithId = jobPostData.map((jobPost) => ({
-      ...jobPost,
-      employer: getRandomEmployerId(createdEmployers),
-    }));
+    const jobPostDataWithId = jobPostData.map((jobPost) => {
+      const { employer_id, user_id } = getRandomEmployerId(createdEmployers);
+      console.log("userID", user_id);
+      return {
+        ...jobPost,
+        employer: employer_id,
+        user: user_id,
+      };
+    });
 
     await Promise.all(
       jobPostDataWithId.map((jobPost) => createJobPost(jobPost))
     );
-
-    const createdUsers = await User.find();
 
     const resumeDataWithId = resumeData.map((resume, index) => ({
       ...resume,

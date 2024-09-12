@@ -6,6 +6,10 @@ const jobPostSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  user: {
+    type: String,
+    required: true,
+  },
   job_post_id: {
     type: String,
     default: uuidv4,
