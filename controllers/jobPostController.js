@@ -31,7 +31,6 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   try {
     const updatedJobPost = await JobPost.update(req.params.id, req.body);
-
     res.send(updatedJobPost);
   } catch (error) {
     res.status(500).send(error);

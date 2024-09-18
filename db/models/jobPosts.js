@@ -105,9 +105,9 @@ const create = async (body) => {
 
 const update = async (id, body) => {
   try {
-    const updatedJobPost = await JobPost.findByIdAndUpdate(
-      id,
-      { ...body, updatedAt: new Date() },
+    const updatedJobPost = await JobPost.findOneAndUpdate(
+      { job_post_id: id },
+      { ...body, modified_at: new Date() },
       { new: true }
     );
     return updatedJobPost;
