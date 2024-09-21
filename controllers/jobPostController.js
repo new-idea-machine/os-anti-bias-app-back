@@ -1,4 +1,5 @@
 const JobPost = require("../db/models/jobPosts");
+const Employer = require("../db/models/employers");
 const jwt = require("jsonwebtoken");
 
 const getAll = async (req, res) => {
@@ -21,7 +22,27 @@ const getOne = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const jobPost = await JobPost.create(req.body);
+    const token = req.headers["authorization"];
+
+    const tokenParts = token.split(" ");
+
+    const decoded = jwt.verify(tokenParts[1], process.env.JWT_SECRET);
+
+    const userId = decoded.user.id;
+
+    const employer = await Employer.getByUser(userId);
+
+    const employerId = employer.employer_id;
+
+    const newJobPost = {
+      ...req.body,
+      user: userId,
+      employer: employerId,
+      created_at: new Date(),
+      modified_at: new Date(),
+    };
+
+    const jobPost = await JobPost.create(newJobPost);
     res.send(jobPost);
   } catch (error) {
     res.status(500).send(error);
