@@ -71,6 +71,29 @@ const getCurrentUserEmployerInfo = async (req, res) => {
   }
 };
 
+const userAuth = async (req, res) => {
+  try {
+    const token = req.headers["authorization"];
+
+    const tokenParts = token.split(" ");
+
+    const decoded = jwt.verify(tokenParts[1], process.env.JWT_SECRET);
+
+    const userId = decoded.user.id;
+
+    const employer = await Employer.getOne(req.params.id);
+
+    const employerUserId = employer.user;
+
+    const canEdit = userId === employerUserId;
+
+    return res.json({ canEdit });
+  } catch (error) {
+    console.error("Error checking edit permission:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   getAll,
   getOne,
@@ -78,4 +101,5 @@ module.exports = {
   update,
   deleteEmployer,
   getCurrentUserEmployerInfo,
+  userAuth,
 };
