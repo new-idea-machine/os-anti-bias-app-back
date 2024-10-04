@@ -121,6 +121,18 @@ const getByUser = async (id) => {
   }
 };
 
+const getAllByName = async (employer_name) => {
+  try {
+    const employers = await Employer.find({
+      employer_name: { $regex: employer_name, $options: "i" },
+    });
+    console.log(employers, "🚨");
+    return employers;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   getAll,
   getOne,
@@ -129,4 +141,5 @@ module.exports = {
   deleteEmployer,
   Employer,
   getByUser,
+  getAllByName,
 };
