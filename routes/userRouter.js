@@ -5,13 +5,12 @@ const userRouter = Router();
 const auth = require("../utils/token");
 
 userRouter.get("/", userController.getAll);
-// userRouter.get("/:id", userController.getOne);
+userRouter.get("/current", userController.getCurrentUser);
+userRouter.get("/:id", userController.getOne);
 userRouter.post("/", userController.create);
 userRouter.put("/:id", userController.update);
 userRouter.delete("/:id", userController.deleteUser);
 
 userRouter.post("/login", userController.login);
-
-userRouter.get("/current", userController.getCurrentUser);
 
 module.exports = userRouter;

@@ -14,9 +14,8 @@ const employerSchema = new mongoose.Schema({
   },
   username: {
     type: String,
-    required: true,
   },
-  password: {
+  user: {
     type: String,
     required: true,
   },
@@ -85,8 +84,8 @@ const create = async (body) => {
 
 const update = async (id, body) => {
   try {
-    const updatedEmployer = await Employer.findByIdAndUpdate(
-      id,
+    const updatedEmployer = await Employer.findOneAndUpdate(
+      { employer_id: id },
       { ...body, updatedAt: new Date() },
       { new: true }
     );
@@ -99,7 +98,9 @@ const update = async (id, body) => {
 
 const deleteEmployer = async (id) => {
   try {
-    const deletedEmployer = await Employer.findOneAndDelete(id);
+    const deletedEmployer = await Employer.findOneAndDelete({
+      employer_id: id,
+    });
 
     if (!deletedEmployer) {
       throw new Error("Employer item not found");
@@ -111,4 +112,34 @@ const deleteEmployer = async (id) => {
   }
 };
 
-module.exports = { getAll, getOne, create, update, deleteEmployer, Employer };
+const getByUser = async (id) => {
+  try {
+    const employer = await Employer.findOne({ user: id });
+    return employer;
+  } catch (error) {
+    return error;
+  }
+};
+
+const getAllByName = async (employer_name) => {
+  try {
+    const employers = await Employer.find({
+      employer_name: { $regex: employer_name, $options: "i" },
+    });
+    console.log(employers, "🚨");
+    return employers;
+  } catch (error) {
+    return error;
+  }
+};
+
+module.exports = {
+  getAll,
+  getOne,
+  create,
+  update,
+  deleteEmployer,
+  Employer,
+  getByUser,
+  getAllByName,
+};

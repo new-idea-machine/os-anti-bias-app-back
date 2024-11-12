@@ -6,6 +6,10 @@ const jobPostSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  user: {
+    type: String,
+    required: true,
+  },
   job_post_id: {
     type: String,
     default: uuidv4,
@@ -101,9 +105,9 @@ const create = async (body) => {
 
 const update = async (id, body) => {
   try {
-    const updatedJobPost = await JobPost.findByIdAndUpdate(
-      id,
-      { ...body, updatedAt: new Date() },
+    const updatedJobPost = await JobPost.findOneAndUpdate(
+      { job_post_id: id },
+      { ...body, modified_at: new Date() },
       { new: true }
     );
     return updatedJobPost;

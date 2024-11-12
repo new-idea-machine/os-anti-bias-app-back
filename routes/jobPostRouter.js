@@ -5,6 +5,7 @@ const jobPostRouter = Router();
 
 jobPostRouter.get("/", jobPostController.getAll);
 jobPostRouter.get("/:id", jobPostController.getOne);
+jobPostRouter.get("/:id/can-edit", jobPostController.canEdit);
 jobPostRouter.post("/", jobPostController.create);
 jobPostRouter.put("/:id", jobPostController.update);
 jobPostRouter.delete("/:id", jobPostController.deleteJobPost);

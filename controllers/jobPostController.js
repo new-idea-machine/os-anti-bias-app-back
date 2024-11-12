@@ -1,4 +1,6 @@
 const JobPost = require("../db/models/jobPosts");
+const Employer = require("../db/models/employers");
+const jwt = require("jsonwebtoken");
 
 const getAll = async (req, res) => {
   try {
@@ -20,7 +22,27 @@ const getOne = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const jobPost = await JobPost.create(req.body);
+    const token = req.headers["authorization"];
+
+    const tokenParts = token.split(" ");
+
+    const decoded = jwt.verify(tokenParts[1], process.env.JWT_SECRET);
+
+    const userId = decoded.user.id;
+
+    const employer = await Employer.getByUser(userId);
+
+    const employerId = employer.employer_id;
+
+    const newJobPost = {
+      ...req.body,
+      user: userId,
+      employer: employerId,
+      created_at: new Date(),
+      modified_at: new Date(),
+    };
+
+    const jobPost = await JobPost.create(newJobPost);
     res.send(jobPost);
   } catch (error) {
     res.status(500).send(error);
@@ -30,7 +52,6 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   try {
     const updatedJobPost = await JobPost.update(req.params.id, req.body);
-
     res.send(updatedJobPost);
   } catch (error) {
     res.status(500).send(error);
@@ -57,6 +78,27 @@ const getByEmployer = async (req, res) => {
   }
 };
 
+const canEdit = async (req, res) => {
+  try {
+    const jobPost = await JobPost.getOne(req.params.id);
+
+    const token = req.headers["authorization"];
+
+    const tokenParts = token.split(" ");
+
+    const decoded = jwt.verify(tokenParts[1], process.env.JWT_SECRET);
+
+    const userId = decoded.user.id;
+
+    const canEdit = jobPost.user === userId;
+
+    return res.json({ canEdit });
+  } catch (error) {
+    console.error("Error checking edit permission:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   getAll,
   getOne,
@@ -64,4 +106,5 @@ module.exports = {
   update,
   deleteJobPost,
   getByEmployer,
+  canEdit,
 };
