@@ -1,6 +1,5 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm run serve"
 
 [deploy]
 restartPolicyType = "ON_FAILURE"
