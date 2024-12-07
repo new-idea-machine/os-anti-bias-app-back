@@ -64,7 +64,7 @@ const getCurrentUserEmployerInfo = async (req, res) => {
 
     const userId = decoded.user.id;
     const employer = await Employer.getByUser(userId);
-    console.log(employer);
+
     res.json(employer);
   } catch (error) {
     res.status(500).send(error);

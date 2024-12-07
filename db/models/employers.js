@@ -126,7 +126,7 @@ const getAllByName = async (employer_name) => {
     const employers = await Employer.find({
       employer_name: { $regex: employer_name, $options: "i" },
     });
-    console.log(employers, "🚨");
+
     return employers;
   } catch (error) {
     return error;

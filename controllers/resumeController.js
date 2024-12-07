@@ -74,9 +74,9 @@ const getCurrentUserResume = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const userId = decoded.user.id;
-    console.log(userId);
+
     const resume = await Resume.getByUser(userId);
-    console.log(resume);
+
     res.json(resume);
   } catch (error) {
     res.status(500).send(error);
