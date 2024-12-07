@@ -1,6 +1,7 @@
 const mongoose = require("../db");
 const { v4: uuidv4 } = require("uuid");
 const { generateToken } = require("../../utils/token");
+const { hashPassword, comparePassword } = require("../../utils/cryptoHelpers");
 
 const userSchema = new mongoose.Schema({
   user_id: {
@@ -96,7 +97,15 @@ const getCurrentUser = async (id) => {
 
 const create = async (body) => {
   try {
-    const user = await User.create(body.user);
+    const hashedPassword = await hashPassword(body.user.password);
+
+    const userData = {
+      ...body.user,
+      password: hashedPassword,
+    };
+
+    const user = await User.create(userData);
+
     return {
       ...user,
       token: generateToken(user),
