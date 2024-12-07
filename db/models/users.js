@@ -146,14 +146,10 @@ const deleteUser = async (id) => {
 const login = async (username, password) => {
   try {
     const user = await User.findOne({ username });
+    if (!user) throw new Error("User not found");
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    if (user.password !== password) {
-      throw new Error("Invalid password");
-    }
+    const isPasswordValid = await comparePassword(password, user.password);
+    if (!isPasswordValid) throw new Error("Invalid password");
 
     return {
       email: user.email,
