@@ -1,91 +1,64 @@
 const User = require("../db/models/users");
-const jwt = require("jsonwebtoken");
+const { extractTokenFromHeader, verifyToken } = require("../utils/token");
 
 const getAll = async (req, res) => {
   try {
-    const user = await User.getAll();
-    res.send(user);
+    const users = await User.getAll();
+    res.status(200).json(users);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 
 const getOne = async (req, res) => {
   try {
     const user = await User.getOne(req.params.id);
-    res.send(user);
+    res.status(200).json(user);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 
 const getCurrentUser = async (req, res) => {
   try {
-    // Check for Authorization Header
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return res
-        .status(401)
-        .json({ error: "No authorization header provided" });
-    }
+    const token = extractTokenFromHeader(req.headers.authorization);
+    const decoded = verifyToken(token);
 
-    // Extract Token
-    const token = authHeader.split(" ")[1];
-    if (!token) {
-      return res.status(401).json({ error: "No token provided" });
-    }
-
-    // Verify Token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded?.user?.id;
-
-    if (!userId) {
+    if (!userId)
       return res.status(403).json({ error: "Invalid token payload" });
-    }
 
-    // Fetch User
     const user = await User.getCurrentUser(userId);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Success Response
     res.status(200).json({ user });
   } catch (error) {
-    // Token verification error
-    if (
-      error.name === "JsonWebTokenError" ||
-      error.name === "TokenExpiredError"
-    ) {
-      return res.status(401).json({ error: "Invalid or expired token" });
-    }
+    res.status(error.statusCode || 401).json({ message: error.message });
   }
 };
 
 const create = async (req, res) => {
   try {
     const user = await User.create(req.body);
-    res.send({ user });
+    res.status(201).json(user);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 
 const update = async (req, res) => {
   try {
     const updatedUser = await User.update(req.params.id, req.body);
-
-    res.send(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 
 const deleteUser = async (req, res) => {
   try {
     const deletedUser = await User.deleteUser(req.params.id);
-
-    res.send(deletedUser.id);
+    res.status(200).json(deletedUser.username);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -95,9 +68,9 @@ const login = async (req, res) => {
   try {
     const { username, password } = req.body.user;
     const user = await User.login(username, password);
-    res.send({ user });
+    res.status(200).json(user);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(error.statusCode || 401).json({ message: error.message });
   }
 };
 
