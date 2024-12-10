@@ -13,4 +13,25 @@ const generateToken = (user) => {
   });
 };
 
-module.exports = { generateToken };
+const extractTokenFromHeader = (authHeader) => {
+  if (!authHeader) throw new Error("No authorization header provided");
+  const token = authHeader.split(" ")[1];
+  if (!token) throw new Error("No token provided");
+  return token;
+};
+
+const verifyToken = (token) => {
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET);
+  } catch (error) {
+    if (
+      error.name === "JsonWebTokenError" ||
+      error.name === "TokenExpiredError"
+    ) {
+      throw new Error("Invalid or expired token");
+    }
+    throw error;
+  }
+};
+
+module.exports = { generateToken, extractTokenFromHeader, verifyToken };

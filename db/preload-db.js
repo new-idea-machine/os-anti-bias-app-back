@@ -6,6 +6,7 @@ const { create: createEmployer, Employer } = require("./models/employers");
 const { create: createJobPost } = require("./models/jobPosts");
 const { create: createResume } = require("./models/resumes");
 const { MONGO_URI } = process.env;
+const { hashPassword } = require("../utils/cryptoHelpers");
 
 const userData = [
   {
@@ -14,7 +15,7 @@ const userData = [
     last_name: "Doe",
     email: "john.doe@example.com",
     username: "johndoe",
-    password: "password123",
+    password: hashPassword("password123"),
     country: "USA",
     city: "New York",
     role: "",
@@ -25,7 +26,7 @@ const userData = [
     last_name: "Smith",
     email: "jane.smith@example.com",
     username: "janesmith",
-    password: "securepass",
+    password: hashPassword("securepass"),
     country: "Canada",
     city: "Toronto",
     role: "",
@@ -36,7 +37,7 @@ const userData = [
     last_name: "Johnson",
     email: "alice.johnson@example.com",
     username: "alicej",
-    password: "alicepass",
+    password: hashPassword("alicepass"),
     country: "UK",
     city: "London",
     role: "",
@@ -47,7 +48,7 @@ const userData = [
     last_name: "Anderson",
     email: "bob.anderson@example.com",
     username: "boband",
-    password: "bobpass",
+    password: hashPassword("bobpass"),
     country: "Australia",
     city: "Sydney",
     role: "",
@@ -58,7 +59,7 @@ const userData = [
     last_name: "Miller",
     email: "eva.miller@example.com",
     username: "evam",
-    password: "evapass",
+    password: hashPassword("evapass"),
     country: "Germany",
     city: "Berlin",
     role: "",
