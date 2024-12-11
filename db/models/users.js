@@ -1,6 +1,7 @@
 const mongoose = require("../db");
 const { v4: uuidv4 } = require("uuid");
 const { generateToken } = require("../../utils/token");
+const { hashPassword, comparePassword } = require("../../utils/cryptoHelpers");
 
 const userSchema = new mongoose.Schema({
   user_id: {
@@ -62,98 +63,87 @@ userSchema.set("toJSON", {
 
 const User = mongoose.model("User", userSchema);
 
+const throwError = (message, statusCode) => {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  throw error;
+};
+
+//GET ALL USERS
 const getAll = async () => {
-  try {
-    const users = await User.find();
-    return users;
-  } catch (error) {
-    return error;
-  }
+  const users = await User.find();
+  if (!users) throwError("No users found", 404);
+  return users;
 };
 
+//GET ONE USER BY ID
 const getOne = async (id) => {
-  try {
-    const user = await User.findOne({ user_id: id });
-    return user;
-  } catch (error) {
-    return error;
-  }
-};
-const getCurrentUser = async (id) => {
-  try {
-    const user = await User.findOne({ user_id: id });
-
-    return {
-      email: user.email,
-      username: user.username,
-      token: generateToken(user),
-      role: user.role,
-    };
-  } catch (error) {
-    return error;
-  }
+  const user = await User.findOne({ user_id: id });
+  if (!user) throwError("user not found", 404);
+  return user;
 };
 
+//GET CURRENT USER BY JWT
+const getCurrentUser = async (token) => {
+  if (!token) throwError("No token provided", 401);
+  const user = await User.findOne({ user_id: token });
+  if (!user) throwError("User not found", 404);
+  return {
+    email: user.email,
+    username: user.username,
+    token: generateToken(user),
+    role: user.role,
+  };
+};
+
+//CREATE A NEW USER
 const create = async (body) => {
-  try {
-    const user = await User.create(body.user);
-    return {
-      ...user,
-      token: generateToken(user),
-    };
-  } catch (error) {
-    return error;
-  }
+  const existingUser = await User.findOne({ email: body.user.email });
+  if (existingUser) throwError("User already exists", 409);
+
+  const hashedPassword = await hashPassword(body.user.password);
+  const userData = { ...body.user, password: hashedPassword };
+
+  const user = await User.create(userData);
+
+  return { ...user, token: generateToken(user) };
 };
 
+//UPDATE USER
 const update = async (id, body) => {
-  try {
-    const updatedUser = await User.findOneAndUpdate(
-      { user_id: id },
-      { ...body, updatedAt: new Date() },
-      { new: true }
-    );
-
-    return updatedUser;
-  } catch (error) {
-    return error;
-  }
+  const updatedUser = await User.findOneAndUpdate(
+    { user_id: id },
+    { ...body, updatedAt: new Date() },
+    { new: true }
+  );
+  if (!updatedUser) throwError("User not found", 404);
+  return updatedUser;
 };
 
+//DELETE USER
 const deleteUser = async (id) => {
-  try {
-    const deletedUser = await User.findOneAndDelete({ user_id: id });
+  const deletedUser = await User.findOneAndDelete({ user_id: id });
 
-    if (!deletedUser) {
-      throw new Error("User item not found");
-    }
-
-    return deletedUser;
-  } catch (error) {
-    return error;
-  }
+  if (!deletedUser) throwError("User not found", 404);
+  return {
+    message: "User deleted successfully",
+    username: deletedUser.username,
+  };
 };
 
+//LOGIN USER
 const login = async (username, password) => {
-  try {
-    const user = await User.findOne({ username });
+  const user = await User.findOne({ username });
+  if (!user) throwError("User not found", 404);
 
-    if (!user) {
-      throw new Error("User not found");
-    }
+  const isPasswordValid = await comparePassword(password, user.password);
+  if (!isPasswordValid) throwError("Invalid password", 401);
 
-    if (user.password !== password) {
-      throw new Error("Invalid password");
-    }
-
-    return {
-      email: user.email,
-      username: user.username,
-      token: generateToken(user),
-    };
-  } catch (error) {
-    return error;
-  }
+  return {
+    email: user.email,
+    username: user.username,
+    token: generateToken(user),
+  };
 };
 
 module.exports = {
