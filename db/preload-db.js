@@ -15,7 +15,7 @@ const userData = [
     last_name: "Doe",
     email: "john.doe@example.com",
     username: "johndoe",
-    password: hashPassword("password123"),
+    password: "password123",
     country: "USA",
     city: "New York",
     role: "",
@@ -26,7 +26,7 @@ const userData = [
     last_name: "Smith",
     email: "jane.smith@example.com",
     username: "janesmith",
-    password: hashPassword("securepass"),
+    password: "securepass",
     country: "Canada",
     city: "Toronto",
     role: "",
@@ -37,7 +37,7 @@ const userData = [
     last_name: "Johnson",
     email: "alice.johnson@example.com",
     username: "alicej",
-    password: hashPassword("alicepass"),
+    password: "alicepass",
     country: "UK",
     city: "London",
     role: "",
@@ -48,7 +48,7 @@ const userData = [
     last_name: "Anderson",
     email: "bob.anderson@example.com",
     username: "boband",
-    password: hashPassword("bobpass"),
+    password: "bobpass",
     country: "Australia",
     city: "Sydney",
     role: "",
@@ -59,7 +59,7 @@ const userData = [
     last_name: "Miller",
     email: "eva.miller@example.com",
     username: "evam",
-    password: hashPassword("evapass"),
+    password: "evapass",
     country: "Germany",
     city: "Berlin",
     role: "",
@@ -726,7 +726,11 @@ const preload = async () => {
     console.log("The 'resumes' collection dropped");
 
     console.log("Seeding data");
-
+    await Promise.all(
+      userData.map(
+        async (user) => (user.password = await hashPassword(user.password))
+      )
+    );
     await Promise.all(userData.map((user) => createUser({ user: user })));
 
     const createdUsers = await User.find();
