@@ -105,8 +105,8 @@ const create = async (body) => {
   const userData = { ...body.user, password: hashedPassword };
 
   const user = await User.create(userData);
-
-  return { ...user, token: generateToken(user) };
+  const { _doc } = user;
+  return { ..._doc, token: generateToken(user) };
 };
 
 //UPDATE USER
