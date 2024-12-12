@@ -1,5 +1,5 @@
-const { MongoMemoryServer } = require("mongodb-memory-server");
-const mongoose = require("mongoose");
+// const { MongoMemoryServer } = require("mongodb-memory-server");
+// const mongoose = require("mongoose");
 const {
   getAll,
   getOne,
@@ -13,7 +13,7 @@ const {
 const { hashPassword } = require("../../utils/cryptoHelpers");
 const { v4: uuidv4 } = require("uuid");
 
-let mongoServer;
+// let mongoServer;
 
 const mockUser = {
   user_id: uuidv4(),
@@ -25,20 +25,19 @@ const mockUser = {
   role: "user",
 };
 
-// describe("User Model Test Suite", () => {
-beforeAll(async () => {
-  // Start MongoMemoryServer and connect Mongoose to the in-memory database
-  mongoServer = await MongoMemoryServer.create();
-  const uri = mongoServer.getUri();
+// beforeAll(async () => {
+//   // Start MongoMemoryServer and connect Mongoose to the in-memory database
+//   mongoServer = await MongoMemoryServer.create();
+//   const uri = mongoServer.getUri();
 
-  await mongoose.createConnection(uri, {});
-});
+//   await mongoose.createConnection(uri, {});
+// });
 
-afterAll(async () => {
-  // Close the connection and stop MongoMemoryServer
-  await mongoose.connection.close();
-  await mongoServer.stop();
-});
+// afterAll(async () => {
+//   // Close the connection and stop MongoMemoryServer
+//   await mongoose.disconnect();
+//   await mongoServer.stop();
+// });
 
 afterEach(async () => {
   // Clear data between tests

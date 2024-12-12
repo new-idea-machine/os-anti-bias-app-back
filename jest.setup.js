@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 let mongoServer;
 
 beforeAll(async () => {
+  await mongoose.disconnect();
   // Start the in-memory MongoDB server
   mongoServer = await MongoMemoryServer.create();
 
@@ -19,10 +20,8 @@ beforeAll(async () => {
   process.env.MONGO_URI = mongoUri;
 
   // Connect Mongoose to the in-memory MongoDB server instead of the cloud
-  await mongoose.connect(mongoUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  await mongoose.connect(mongoUri);
+  console.log(`MongoDB successfully connected to ${mongoUri}`);
 });
 
 afterAll(async () => {
