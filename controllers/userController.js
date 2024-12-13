@@ -58,9 +58,9 @@ const update = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const deletedUser = await User.deleteUser(req.params.id);
-    res.status(200).send(deletedUser.username);
+    res.status(200).send(deletedUser);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(error.statusCode || 500).send({ message: error.message });
   }
 };
 

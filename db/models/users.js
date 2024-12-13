@@ -123,7 +123,6 @@ const update = async (id, body) => {
 //DELETE USER
 const deleteUser = async (id) => {
   const deletedUser = await User.findOneAndDelete({ user_id: id });
-
   if (!deletedUser) throwError("User not found", 404);
   return {
     message: "User deleted successfully",
