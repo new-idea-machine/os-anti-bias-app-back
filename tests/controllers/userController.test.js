@@ -1,13 +1,8 @@
 const request = require("supertest");
 const server = require("../../server");
-// const User = require("../../db/models/users");
 const { hashPassword } = require("../../utils/cryptoHelpers");
 const { v4: uuidv4 } = require("uuid");
 const { User } = require("../../db/models/users");
-// const { generateToken } = require("../../utils/token");
-
-//MOCK USER MODEL METHODS
-// jest.mock("../../db/models/users");
 
 describe("User Controller Tests", () => {
   const mockUser = {
@@ -19,12 +14,6 @@ describe("User Controller Tests", () => {
     password: "password123",
     role: "user",
   };
-
-  // let token;
-
-  // beforeAll(async () => {
-  //   token = generateToken({ user: mockUser });
-  // });
 
   afterEach(async () => {
     // Clear data between tests

@@ -703,7 +703,6 @@ const resumeData = [
 const preload = async () => {
   try {
     console.log("Establishing database connection");
-    console.log(MONGO_URI);
     await mongoose.connect(MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -748,8 +747,6 @@ const preload = async () => {
       };
     });
 
-    console.log(employerDataWithUserId);
-
     await Promise.all(
       employerDataWithUserId.map((employer) => createEmployer(employer))
     );
@@ -768,7 +765,6 @@ const preload = async () => {
 
     const jobPostDataWithId = jobPostData.map((jobPost) => {
       const { employer_id, user_id } = getRandomEmployerId(createdEmployers);
-      console.log("userID", user_id);
       return {
         ...jobPost,
         employer: employer_id,

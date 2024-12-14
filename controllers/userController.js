@@ -23,11 +23,9 @@ const getCurrentUser = async (req, res) => {
   try {
     const token = extractTokenFromHeader(req.headers.authorization);
     const decoded = verifyToken(token);
-    console.log(token);
     const userId = decoded?.user?.id;
     if (!userId)
       return res.status(403).json({ error: "Invalid token payload" });
-    console.log(userId);
     const user = await User.getCurrentUser(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
