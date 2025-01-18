@@ -38,7 +38,7 @@ const getCurrentUser = async (req, res) => {
 const create = async (req, res) => {
   try {
     const user = await User.create(req.body);
-    res.status(201).send(user);
+    res.status(201).send({ user: user });
   } catch (error) {
     res.status(error.statusCode || 500).json({ message: error.message });
   }
