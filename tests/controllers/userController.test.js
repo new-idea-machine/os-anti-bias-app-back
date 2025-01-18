@@ -65,7 +65,7 @@ describe("User Controller Tests", () => {
         .post("/api/users")
         .send({ user: mockUser });
       expect(response.statusCode).toBe(201);
-      expect(response.body).toHaveProperty("username", mockUser.username);
+      expect(response.body.user).toHaveProperty("username", mockUser.username);
     });
     // //IMPLEMENT AN ERROR CODE WHEN FIELDS ARE MISSING
     // it.only("should return 400 if required fields are missing", async () => {
