@@ -99,6 +99,23 @@ const canEdit = async (req, res) => {
   }
 };
 
+const getFiltered = async(req, res) => {
+  const searchString = req.query.searchString ? req.query.searchString.toLowerCase() : '';
+  const filters = req.query.filters ? JSON.parse(req.query.filters) : {};
+  const jobPosts = await JobPost.getAll();
+  const filteredJobs = jobPosts.filter(job => {
+    const matchesSearch = job.description.toLowerCase().includes(searchString) || job.job_title.toLowerCase().includes(searchString);
+    const matchesFilters = Object.keys(filters).every(key => {
+      const filterValue = filters[key];
+      return filterValue === undefined || job[key] === filterValue;
+    });
+
+    return matchesSearch && matchesFilters;
+  });
+
+  res.json(filteredJobs);
+}
+
 module.exports = {
   getAll,
   getOne,
@@ -107,4 +124,5 @@ module.exports = {
   deleteJobPost,
   getByEmployer,
   canEdit,
+  getFiltered,
 };
