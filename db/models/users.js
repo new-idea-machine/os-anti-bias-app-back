@@ -105,8 +105,8 @@ const create = async (body) => {
   const userData = { ...body.user, password: hashedPassword };
 
   const user = await User.create(userData);
-
-  return { ...user, token: generateToken(user) };
+  const { _doc } = user;
+  return { ..._doc, token: generateToken(user) };
 };
 
 //UPDATE USER
@@ -123,7 +123,6 @@ const update = async (id, body) => {
 //DELETE USER
 const deleteUser = async (id) => {
   const deletedUser = await User.findOneAndDelete({ user_id: id });
-
   if (!deletedUser) throwError("User not found", 404);
   return {
     message: "User deleted successfully",
