@@ -11,10 +11,10 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    // origin: "http://localhost:4200",
-    // methods: ["GET", "POST", "PUT", "DELETE"],
-    // allowedHeaders: ["Content-Type"],
-    // optionsSuccessStatus: 200,
+    origin: "http://localhost:4200",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    optionsSuccessStatus: 200,
   })
 );
 
@@ -23,6 +23,7 @@ app.use("/api", apiRouter);
 
 const server = app.listen(PORT, () => {
   logger.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
 
 module.exports = server;

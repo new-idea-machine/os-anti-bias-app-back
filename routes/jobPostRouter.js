@@ -4,6 +4,7 @@ const JobPost = require("../db/models/jobPosts");
 const jobPostRouter = Router();
 
 jobPostRouter.get("/", jobPostController.getAll);
+jobPostRouter.get("/filtered", jobPostController.getFiltered);
 jobPostRouter.get("/:id", jobPostController.getOne);
 jobPostRouter.get("/:id/can-edit", jobPostController.canEdit);
 jobPostRouter.post("/", jobPostController.create);

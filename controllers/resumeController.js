@@ -83,8 +83,26 @@ const getCurrentUserResume = async (req, res) => {
   }
 };
 
+const getFiltered = async(req, res) => {
+  const searchString = req.query.searchString ? req.query.searchString.toLowerCase() : '';
+  const filters = req.query.filters ? JSON.parse(req.query.filters) : {};
+  const resumes = await Resume.getAll();
+  const filteredResumes = resumes.filter(resume => {
+    const matchesSearch = resume.summary.toLowerCase().includes(searchString) || resume.title.toLowerCase().includes(searchString);
+    const matchesFilters = Object.keys(filters).every(key => {
+      const filterValue = filters[key];
+      return filterValue === undefined || resume[key] === filterValue;
+    });
+
+    return matchesSearch && matchesFilters;
+  });
+
+  res.json(filteredResumes);
+};
+
 module.exports = {
   getAll,
+  getFiltered,
   getOne,
   create,
   update,
