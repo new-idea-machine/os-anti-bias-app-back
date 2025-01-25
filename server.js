@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(
   cors({
     // origin: "http://localhost:4200",
-    origin: "https://just-talent.onrender.com/",
+    origin: "https://just-talent.onrender.com",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     optionsSuccessStatus: 200,
