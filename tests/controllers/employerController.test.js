@@ -42,4 +42,32 @@ describe("Employer Controller Tests", () => {
       );
     });
   });
+
+  describe("GET /api/employers/:id", () => {
+    it("should return an employer by ID with 200 status", async () => {
+      // Create a user to test
+      const createdEmployer = await Employer.create(mockEmployer);
+      testEmployerId = createdEmployer.employer_id;
+
+      const response = await request(server).get(
+        `/api/employers/${testEmployerId}`
+      );
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toHaveProperty(
+        "employer_name",
+        mockEmployer.employer_name
+      );
+    });
+
+    it("should return 404 if employer is not found", async () => {
+      const nonExistentId = uuidv4();
+      const response = await request(server).get(
+        `/api/employers/${nonExistentId}`
+      );
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body.message).toBe("employer not found");
+    });
+  });
 });
