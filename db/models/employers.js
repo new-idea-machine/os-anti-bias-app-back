@@ -55,82 +55,66 @@ employerSchema.set("toJSON", {
 
 const Employer = mongoose.model("Employer", employerSchema);
 
+const throwError = (message, statusCode) => {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  throw error;
+};
+
+//GET ALL EMPLOYERS
 const getAll = async () => {
-  try {
-    const employers = await Employer.find();
-    return employers;
-  } catch (error) {
-    return error;
-  }
+  const employers = await Employer.find();
+  if (!employers) throwError("NO employers found", 404);
+  return employers;
 };
 
+//GET ONE EMPLOYER BY ID
 const getOne = async (id) => {
-  try {
-    const employer = await Employer.findOne({ employer_id: id });
-    return employer;
-  } catch (error) {
-    return error;
-  }
+  const employer = await Employer.findOne({ employer_id: id });
+  if (!employer) throwError("employer not found", 404);
+  return employer;
 };
 
+//CREATE A NEW EMPLOYER
 const create = async (body) => {
-  try {
-    const employer = await Employer.create(body);
-    return employer;
-  } catch (error) {
-    return error;
-  }
+  const employer = await Employer.create(body);
+  if (!employer) throwError("Employer profile creation failed");
+  return employer;
 };
 
+//UPDATE EMPLOYER
 const update = async (id, body) => {
-  try {
-    const updatedEmployer = await Employer.findOneAndUpdate(
-      { employer_id: id },
-      { ...body, updatedAt: new Date() },
-      { new: true }
-    );
-
-    return updatedEmployer;
-  } catch (error) {
-    return error;
-  }
+  const updatedEmployer = await Employer.findOneAndUpdate(
+    { employer_id: id },
+    { ...body, updatedAt: new Date() },
+    { new: true }
+  );
+  if (!updatedEmployer) throwError("Employer not found", 404);
+  return updatedEmployer;
 };
 
+//DELETE EMPLOYER
 const deleteEmployer = async (id) => {
-  try {
-    const deletedEmployer = await Employer.findOneAndDelete({
-      employer_id: id,
-    });
-
-    if (!deletedEmployer) {
-      throw new Error("Employer item not found");
-    }
-
-    return deletedEmployer;
-  } catch (error) {
-    return error;
-  }
+  const deletedEmployer = await Employer.findOneAndDelete({
+    employer_id: id,
+  });
+  if (!deletedEmployer) throwError("Employer item not found", 404);
+  return deletedEmployer;
 };
 
+//GET EMPLOYER BY USER ID
 const getByUser = async (id) => {
-  try {
-    const employer = await Employer.findOne({ user: id });
-    return employer;
-  } catch (error) {
-    return error;
-  }
+  const employer = await Employer.findOne({ user: id });
+  if (!employer) throwError("Employer not found", 404);
+  return employer;
 };
 
+//GET ALL EMPLOYER BY EMPLOYER NAME
 const getAllByName = async (employer_name) => {
-  try {
-    const employers = await Employer.find({
-      employer_name: { $regex: employer_name, $options: "i" },
-    });
-
-    return employers;
-  } catch (error) {
-    return error;
-  }
+  const employers = await Employer.find({
+    employer_name: { $regex: employer_name, $options: "i" },
+  });
+  return employers;
 };
 
 module.exports = {
