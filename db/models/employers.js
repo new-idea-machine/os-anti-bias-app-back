@@ -78,7 +78,7 @@ const getOne = async (id) => {
 //CREATE A NEW EMPLOYER
 const create = async (body) => {
   const employer = await Employer.create(body);
-  if (!employer) throwError("Employer profile creation failed");
+  if (!employer) throwError("Employer profile creation failed", 404);
   return employer;
 };
 

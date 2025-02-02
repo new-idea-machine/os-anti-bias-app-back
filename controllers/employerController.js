@@ -4,18 +4,18 @@ const jwt = require("jsonwebtoken");
 const getAll = async (req, res) => {
   try {
     const employer = await Employer.getAll();
-    res.send(employer);
+    res.status(200).send(employer);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 
 const getOne = async (req, res) => {
   try {
     const employer = await Employer.getOne(req.params.id);
-    res.send(employer);
+    res.status(200).send(employer);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 
@@ -30,9 +30,9 @@ const create = async (req, res) => {
       user: userId,
     };
     const employer = await Employer.create(newEmployer);
-    res.send(employer);
+    res.status(201).send(employer);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 
@@ -40,9 +40,9 @@ const update = async (req, res) => {
   try {
     const updatedEmployer = await Employer.update(req.params.id, req.body);
 
-    res.send(updatedEmployer);
+    res.status(200).send(updatedEmployer);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 
@@ -50,9 +50,9 @@ const deleteEmployer = async (req, res) => {
   try {
     const deletedEmployer = await Employer.deleteEmployer(req.params.id);
 
-    res.send(deletedEmployer.id);
+    res.status(200).send(deletedEmployer.id);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 
@@ -65,9 +65,9 @@ const getCurrentUserEmployerInfo = async (req, res) => {
     const userId = decoded.user.id;
     const employer = await Employer.getByUser(userId);
 
-    res.json(employer);
+    res.status(200).json(employer);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 
@@ -87,10 +87,10 @@ const userAuth = async (req, res) => {
 
     const canEdit = userId === employerUserId;
 
-    return res.json({ canEdit });
+    return res.status(200).json({ canEdit });
   } catch (error) {
     console.error("Error checking edit permission:", error);
-    return res.status(500).json({ message: "Server error" });
+    return res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 
@@ -110,8 +110,7 @@ const getByEmployerName = async (req, res) => {
 
     res.send(employers);
   } catch (error) {
-    console.error("Error fetching employers by name:", error);
-    res.status(500).send({ message: "Server error" });
+    res.status(error.statusCode || 500).send({ message: error.message });
   }
 };
 
