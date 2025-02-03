@@ -21,7 +21,7 @@ const getOne = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const token = req.body.user;
+    const { token } = req.body;
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const userId = decoded.user.id;
@@ -50,7 +50,7 @@ const deleteEmployer = async (req, res) => {
   try {
     const deletedEmployer = await Employer.deleteEmployer(req.params.id);
 
-    res.status(200).send(deletedEmployer.id);
+    res.status(200).send({ message: "Employer deleted successfully" });
   } catch (error) {
     res.status(error.statusCode || 500).json({ message: error.message });
   }

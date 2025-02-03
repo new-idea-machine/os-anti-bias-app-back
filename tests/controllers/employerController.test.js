@@ -2,6 +2,7 @@ const request = require("supertest"); //JS library for testing HTTP servers
 const server = require("../../server");
 const { v4: uuidv4 } = require("uuid");
 const { Employer } = require("../../db/models/employers");
+const jwt = require("jsonwebtoken");
 
 describe("Employer Controller Tests", () => {
   const mockEmployer = {
@@ -68,6 +69,61 @@ describe("Employer Controller Tests", () => {
 
       expect(response.statusCode).toBe(404);
       expect(response.body.message).toBe("employer not found");
+    });
+  });
+
+  describe("POST /api/employers", () => {
+    it("should create a new employer and return 201 status", async () => {
+      const token = jwt.sign({ user: { id: 1 } }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+      });
+
+      const mockEmployerWithToken = {
+        ...mockEmployer,
+        token,
+      };
+
+      const response = await request(server)
+        .post("/api/employers")
+        .send(mockEmployerWithToken);
+
+      expect(response.statusCode).toBe(201);
+      expect(response.body).toHaveProperty(
+        "employer_name",
+        mockEmployer.employer_name
+      );
+    });
+  });
+
+  describe("PUT /api/employers/:id", () => {
+    it("should update an existing employer and return 200 status", async () => {
+      const createdEmployer = await Employer.create(mockEmployer);
+      testEmployerId = createdEmployer.employer_id;
+
+      const updatedEmployer = {
+        ...mockEmployer,
+        employer_name: "XYZ Corporation",
+      };
+
+      const response = await request(server)
+        .put(`/api/employers/${testEmployerId}`)
+        .send(updatedEmployer);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toHaveProperty("employer_name", "XYZ Corporation");
+    });
+  });
+
+  describe("DELETE /api/employers/:id", () => {
+    it("should delete an employer by ID and return 200 status", async () => {
+      const createdEmployer = await Employer.create(mockEmployer);
+      testEmployerId = createdEmployer.employer_id;
+
+      const response = await request(server).delete(
+        `/api/employers/${testEmployerId}`
+      );
+      expect(response.statusCode).toBe(200);
+      expect(response.body.message).toBe("Employer deleted successfully");
     });
   });
 });
