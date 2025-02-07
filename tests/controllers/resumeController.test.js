@@ -90,4 +90,15 @@ describe("Resume Controller Tests", () => {
     await server.close();
     console.log("server is closed");
   });
+  //probably not a good test considering you shouldn't be able to access all resume data without auth
+  describe("GET /api/resume", () => {
+    it("should respond with a 200 status code", async () => {
+      await Resume.create(mockResume);
+
+      const response = await request(server).get("/api/resume");
+      expect(response.statusCode).toBe(200);
+      expect(response.body.length).toBe(1);
+      expect(response.body[0]).toHaveProperty("resume_id", mockUser.resume_id);
+    });
+  });
 });
