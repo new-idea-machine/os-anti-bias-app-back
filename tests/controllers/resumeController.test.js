@@ -82,7 +82,7 @@ describe("Resume Controller Tests", () => {
 
   afterEach(async () => {
     // Clear data between tests
-    await User.deleteMany({});
+    await Resume.deleteMany({});
   });
 
   afterAll(async () => {
@@ -98,7 +98,10 @@ describe("Resume Controller Tests", () => {
       const response = await request(server).get("/api/resume");
       expect(response.statusCode).toBe(200);
       expect(response.body.length).toBe(1);
-      expect(response.body[0]).toHaveProperty("resume_id", mockUser.resume_id);
+      expect(response.body[0]).toHaveProperty(
+        "resume_id",
+        mockResume.resume_id
+      );
     });
   });
 });
