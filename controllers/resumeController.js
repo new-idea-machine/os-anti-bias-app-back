@@ -21,7 +21,7 @@ const getOne = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const token = req.body.user;
+    const { token } = req.body;
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const userId = decoded.user.id;
@@ -39,6 +39,7 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
   try {
+    //ADD USE AUTH
     const updatedResume = await Resume.update(req.params.id, req.body);
 
     res.status(200).send(updatedResume);
@@ -49,6 +50,7 @@ const update = async (req, res) => {
 
 const deleteResume = async (req, res) => {
   try {
+    //ADD USE AUTH
     const deletedResume = await Resume.deleteResume(req.params.id);
 
     res.status(200).send(deletedResume.id);

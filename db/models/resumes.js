@@ -121,10 +121,10 @@ const update = async (id, body) => {
 
 //DELETE RESUME
 const deleteResume = async (id) => {
-  const deletedResume = await Resume.findByIdAndDelete(id);
+  const deletedResume = await Resume.findOneAndDelete({ resume_id: id });
 
   if (!deletedResume) {
-    throw new Error("Resume item is not found", 404);
+    throwError("Resume item is not found", 404);
   }
   return {
     message: "Resume deleted successfully",

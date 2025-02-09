@@ -2,6 +2,7 @@ const request = require("supertest");
 const server = require("../../server");
 const { v4: uuidv4 } = require("uuid");
 const { Resume } = require("../../db/models/resumes");
+const jwt = require("jsonwebtoken");
 
 describe("Resume Controller Tests", () => {
   const mockResume = {
@@ -102,6 +103,96 @@ describe("Resume Controller Tests", () => {
         "resume_id",
         mockResume.resume_id
       );
+    });
+
+    it("should return an empty array if no resumes exist", async () => {
+      const response = await request(server).get("/api/resume");
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toEqual([]);
+    });
+  });
+
+  describe("GET /api/resume/:id", () => {
+    it("should return a single resume when given a valid ID", async () => {
+      const createdResume = await Resume.create(mockResume);
+
+      const response = await request(server).get(
+        `/api/resume/${createdResume.resume_id}`
+      );
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toHaveProperty("resume_id", mockResume.resume_id);
+    });
+
+    it("should return 404 if resume is not found", async () => {
+      const nonExistentId = uuidv4();
+      const response = await request(server).get(
+        `/api/resume/${nonExistentId}`
+      );
+
+      expect(response.statusCode).toBe(404);
+    });
+  });
+
+  describe("POST /api/resume", () => {
+    it("should create a new resume and return 201", async () => {
+      const token = jwt.sign({ user: { id: 1 } }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+      });
+
+      const mockResumeWithToken = {
+        ...mockResume,
+        token,
+      };
+
+      const response = await request(server)
+        .post("/api/resume")
+        .send(mockResumeWithToken);
+
+      expect(response.statusCode).toBe(201);
+      expect(response.body).toHaveProperty("resume_id");
+      expect(response.body.title).toBe(mockResume.title);
+    });
+  });
+
+  describe("PUT /api/resume/:id", () => {
+    it("should update an existing resume", async () => {
+      const createdResume = await Resume.create(mockResume);
+
+      const updatedData = { title: "Updated Title" };
+      const response = await request(server)
+        .put(`/api/resume/${createdResume.resume_id}`)
+        .send(updatedData);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body.title).toBe("Updated Title");
+    });
+
+    it("should return 404 if trying to update a non-existent resume", async () => {
+      const response = await request(server)
+        .put(`/api/resume/${uuidv4()}`)
+        .send({ title: "New Title" });
+
+      expect(response.statusCode).toBe(404);
+    });
+  });
+
+  describe("DELETE /api/resume/:id", () => {
+    it("should delete an existing resume and return 200", async () => {
+      const createdResume = await Resume.create(mockResume);
+
+      const response = await request(server).delete(
+        `/api/resume/${createdResume.resume_id}`
+      );
+
+      expect(response.statusCode).toBe(200);
+    });
+
+    it("should return 404 if trying to delete a non-existent resume", async () => {
+      const response = await request(server).delete(`/api/resume/${uuidv4()}`);
+
+      expect(response.statusCode).toBe(404);
     });
   });
 });
