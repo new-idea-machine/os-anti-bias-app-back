@@ -79,66 +79,63 @@ resumeSchema.set("toJSON", {
 
 const Resume = mongoose.model("Resume", resumeSchema);
 
+const throwError = (message, statusCode) => {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  throw error;
+};
+
+//GET ALL RESUMES
 const getAll = async () => {
-  try {
-    const resumes = await Resume.find();
-    return resumes;
-  } catch (error) {
-    return error;
-  }
+  const resumes = await Resume.find();
+  if (!resumes) throwError("No resume found", 404);
+  return resumes;
 };
 
+//GET ONE RESUME BY ID
 const getOne = async (id) => {
-  try {
-    const resume = await Resume.findById(id);
-    return resume;
-  } catch (error) {
-    return error;
-  }
+  const resume = await Resume.findOne({ resume_id: id });
+  if (!resume) throwError("Resume not found", 404);
+  return resume;
 };
 
+//CREATE A NEW RESUME
 const create = async (body) => {
-  try {
-    const resume = await Resume.create(body);
-    return resume;
-  } catch (error) {
-    return error;
-  }
+  const existingResume = await Resume.findOne({ user: body.user });
+  if (existingResume) throwError("This user already has a resume", 409);
+  const resume = await Resume.create(body);
+  if (!resume) throwError("Resume creation failed", 404);
+  return resume;
 };
 
+//UPDATE RESUME
 const update = async (id, body) => {
-  try {
-    const updatedResume = await Resume.findOneAndUpdate(
-      { resume_id: id },
-      { ...body, updatedAt: new Date() },
-      { new: true }
-    );
-    return updatedResume;
-  } catch (error) {
-    return error;
-  }
+  const updatedResume = await Resume.findOneAndUpdate(
+    { resume_id: id },
+    { ...body, updatedAt: new Date() },
+    { new: true }
+  );
+  if (!updatedResume) throwError("Resume not found", 404);
+  return updatedResume;
 };
 
+//DELETE RESUME
 const deleteResume = async (id) => {
-  try {
-    const deletedResume = await Resume.findByIdAndDelete(id);
+  const deletedResume = await Resume.findOneAndDelete({ resume_id: id });
 
-    if (!deletedResume) {
-      throw new Error("Resume item is not found");
-    }
-    return deleteResume;
-  } catch (error) {
-    return error;
+  if (!deletedResume) {
+    throwError("Resume item is not found", 404);
   }
+  return {
+    message: "Resume deleted successfully",
+  };
 };
 
+//GET RESUME BY USER ID;
 const getByUser = async (id) => {
-  try {
-    const resume = await Resume.findOne({ user: id });
-    return resume;
-  } catch (error) {
-    return error;
-  }
+  const resume = await Resume.findOne({ user: id });
+  if (!resume) throwError("Resume not found", 404);
+  return resume;
 };
 
 module.exports = {
