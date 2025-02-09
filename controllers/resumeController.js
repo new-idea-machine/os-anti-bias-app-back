@@ -60,8 +60,8 @@ const deleteResume = async (req, res) => {
 const getByUser = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const jobPosts = await Resume.getByUser(userId);
-    res.status(200).json(jobPosts);
+    const resume = await Resume.getByUser(userId);
+    res.status(200).json(resume);
   } catch (error) {
     res.status(error.statusCode || 500).json({ message: error.message });
   }
