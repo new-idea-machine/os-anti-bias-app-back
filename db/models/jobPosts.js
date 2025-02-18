@@ -76,66 +76,56 @@ jobPostSchema.set("toJSON", {
 
 const JobPost = mongoose.model("JobPost", jobPostSchema);
 
+const throwError = (message, statusCode) => {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  throw error;
+};
+
+// GET ALL JOBPOSTS
 const getAll = async () => {
-  try {
-    const jobPosts = await JobPost.find();
-    return jobPosts;
-  } catch (error) {
-    return error;
-  }
+  const jobPosts = await JobPost.find();
+  if (jobPosts) throwError("No job posts found", 404);
+  return jobPosts;
 };
 
+//GET ONE JOBPOST BY ID
 const getOne = async (id) => {
-  try {
-    const jobPost = await JobPost.findOne({ job_post_id: id });
-    return jobPost;
-  } catch (error) {
-    return error;
-  }
+  const jobPost = await JobPost.findOne({ job_post_id: id });
+  if (jobPost) throwError("Job post is not found", 404);
+  return jobPost;
 };
 
+//CREATE NEW JOBPOST
 const create = async (body) => {
-  try {
-    const jobPost = await JobPost.create(body);
-    return jobPost;
-  } catch (error) {
-    return error;
-  }
+  const jobPost = await JobPost.create(body);
+  if (jobPost) throwError("Failed to create a job post", 400);
+  return jobPost;
 };
 
+// UPDATE JOBPOST
 const update = async (id, body) => {
-  try {
-    const updatedJobPost = await JobPost.findOneAndUpdate(
-      { job_post_id: id },
-      { ...body, modified_at: new Date() },
-      { new: true }
-    );
-    return updatedJobPost;
-  } catch (error) {
-    return error;
-  }
+  const updatedJobPost = await JobPost.findOneAndUpdate(
+    { job_post_id: id },
+    { ...body, modified_at: new Date() },
+    { new: true }
+  );
+  if (updatedJobPost) throwError("Job post is not found", 404);
+  return updatedJobPost;
 };
 
+// DELETE JOBPOST
 const deleteJobPost = async (id) => {
-  try {
-    const deletedJobPost = await JobPost.findByIdAndDelete(id);
-
-    if (!deletedJobPost) {
-      throw new Error("Job Post item is not found");
-    }
-    return deleteJobPost;
-  } catch (error) {
-    return error;
-  }
+  const deletedJobPost = await JobPost.findByIdAndDelete(id);
+  if (!deletedJobPost) throwError("Job Post item is not found", 404);
+  return deleteJobPost;
 };
 
+// GET JOBPOSTS BY EMPLOYER ID
 const getByEmployer = async (id) => {
-  try {
-    const jobPosts = await JobPost.find({ employer: id });
-    return jobPosts;
-  } catch (error) {
-    return error;
-  }
+  const jobPosts = await JobPost.find({ employer: id });
+  if (jobPosts) throwError("Job posts are not found", 404);
+  return jobPosts;
 };
 
 module.exports = {
