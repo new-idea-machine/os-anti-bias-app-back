@@ -85,21 +85,21 @@ const throwError = (message, statusCode) => {
 // GET ALL JOBPOSTS
 const getAll = async () => {
   const jobPosts = await JobPost.find();
-  if (jobPosts) throwError("No job posts found", 404);
+  if (!jobPosts) throwError("No job posts found", 404);
   return jobPosts;
 };
 
 //GET ONE JOBPOST BY ID
 const getOne = async (id) => {
   const jobPost = await JobPost.findOne({ job_post_id: id });
-  if (jobPost) throwError("Job post is not found", 404);
+  if (!jobPost) throwError("Job post is not found", 404);
   return jobPost;
 };
 
 //CREATE NEW JOBPOST
 const create = async (body) => {
   const jobPost = await JobPost.create(body);
-  if (jobPost) throwError("Failed to create a job post", 400);
+  if (!jobPost) throwError("Failed to create a job post", 400);
   return jobPost;
 };
 
@@ -110,7 +110,7 @@ const update = async (id, body) => {
     { ...body, modified_at: new Date() },
     { new: true }
   );
-  if (updatedJobPost) throwError("Job post is not found", 404);
+  if (!updatedJobPost) throwError("Job post is not found", 404);
   return updatedJobPost;
 };
 
@@ -124,7 +124,7 @@ const deleteJobPost = async (id) => {
 // GET JOBPOSTS BY EMPLOYER ID
 const getByEmployer = async (id) => {
   const jobPosts = await JobPost.find({ employer: id });
-  if (jobPosts) throwError("Job posts are not found", 404);
+  if (!jobPosts) throwError("Job posts are not found", 404);
   return jobPosts;
 };
 

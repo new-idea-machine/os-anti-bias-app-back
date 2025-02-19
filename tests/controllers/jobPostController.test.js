@@ -49,4 +49,29 @@ describe("JobPost Controller Tests", () => {
       );
     });
   });
+
+  describe("GET /api/jobposts/:id", () => {
+    it("should return a job post by ID with 200 status", async () => {
+      // Create a job post to test
+      const createdJobPost = await JobPost.create(mockJobPost);
+      testJobPostId = createdJobPost.job_post_id;
+
+      const response = await request(server).get(
+        `/api/jobPosts/${testJobPostId}`
+      );
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toHaveProperty("job_title", mockJobPost.job_title);
+    });
+
+    it("should return 404 if job post is not found", async () => {
+      const nonExistentId = uuidv4();
+      const response = await request(server).get(
+        `/api/jobposts/${nonExistentId}`
+      );
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body.message).toBe("Job post is not found");
+    });
+  });
 });
