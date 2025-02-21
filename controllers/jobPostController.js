@@ -23,10 +23,13 @@ const getOne = async (req, res) => {
 const create = async (req, res) => {
   try {
     const token = req.headers["authorization"];
+
     const tokenParts = token.split(" ");
     const decoded = jwt.verify(tokenParts[1], process.env.JWT_SECRET);
+
     const userId = decoded.user.id;
     const employer = await Employer.getByUser(userId);
+
     const employerId = employer.employer_id;
     const newJobPost = {
       ...req.body,
@@ -37,6 +40,7 @@ const create = async (req, res) => {
     };
 
     const jobPost = await JobPost.create(newJobPost);
+
     res.status(201).send(jobPost);
   } catch (error) {
     res.status(error.statusCode || 500).json({ message: error.message });

@@ -2,6 +2,8 @@ const request = require("supertest");
 const server = require("../../server");
 const { v4: uuidv4 } = require("uuid");
 const { JobPost } = require("../../db/models/jobPosts");
+const jwt = require("jsonwebtoken");
+const { Employer } = require("../../db/models/employers");
 
 describe("JobPost Controller Tests", () => {
   const mockJobPost = {
@@ -22,6 +24,21 @@ describe("JobPost Controller Tests", () => {
     location: "Office-based",
     created_at: "2023-01-15T10:30:00",
     modified_at: "2023-01-20T14:45:00",
+  };
+
+  const mockEmployer = {
+    employer_id: uuidv4(),
+    employer_name: "ABC Company",
+    username: "abc_company",
+    password: "password123",
+    user: 1,
+    description: "A leading company in the industry",
+    number_of_employees: 100,
+    contact_name: "John Doe",
+    contact_email: "john.doe@abccompany.com",
+    established_date: "2020-01-01",
+    created_at: "2023-01-01T12:00:00",
+    modified_at: "2023-01-02T08:30:00",
   };
 
   afterEach(async () => {
@@ -50,7 +67,7 @@ describe("JobPost Controller Tests", () => {
     });
   });
 
-  describe("GET /api/jobposts/:id", () => {
+  describe("GET /api/jobPosts/:id", () => {
     it("should return a job post by ID with 200 status", async () => {
       // Create a job post to test
       const createdJobPost = await JobPost.create(mockJobPost);
@@ -72,6 +89,23 @@ describe("JobPost Controller Tests", () => {
 
       expect(response.statusCode).toBe(404);
       expect(response.body.message).toBe("Job post is not found");
+    });
+  });
+  describe("POST /api/jobPosts", () => {
+    it("should create a new job post and return 201 status", async () => {
+      const token = jwt.sign({ user: { id: 1 } }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+      });
+
+      await Employer.create(mockEmployer);
+
+      const response = await request(server)
+        .post("/api/jobPosts")
+        .set("Authorization", `Bearer ${token}`)
+        .send(mockJobPost);
+
+      expect(response.statusCode).toBe(201);
+      expect(response.body).toHaveProperty("job_title", mockJobPost.job_title);
     });
   });
 });
