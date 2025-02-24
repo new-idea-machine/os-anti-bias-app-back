@@ -116,7 +116,7 @@ const update = async (id, body) => {
 
 // DELETE JOBPOST
 const deleteJobPost = async (id) => {
-  const deletedJobPost = await JobPost.findByIdAndDelete(id);
+  const deletedJobPost = await JobPost.findOneAndDelete({ job_post_id: id });
   if (!deletedJobPost) throwError("Job Post item is not found", 404);
   return deleteJobPost;
 };

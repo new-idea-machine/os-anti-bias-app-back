@@ -58,10 +58,8 @@ const update = async (req, res) => {
 
 const deleteJobPost = async (req, res) => {
   try {
-    console.log(req.params.id);
     const deletedJobPost = await JobPost.deleteJobPost(req.params.id);
-    console.lof(deletedJobPost);
-    res.status(200).send(deletedJobPost.id);
+    res.status(200).send(deletedJobPost.job_post_id);
   } catch (error) {
     res.status(error.statusCode || 500).json({ message: error.message });
   }
