@@ -108,4 +108,46 @@ describe("JobPost Controller Tests", () => {
       expect(response.body).toHaveProperty("job_title", mockJobPost.job_title);
     });
   });
+
+  describe("PUT /api/jobPosts/:id", () => {
+    it("should update an existing job post", async () => {
+      const createdJobPost = await JobPost.create(mockJobPost);
+
+      const updatedData = { job_title: "Updated Title" };
+      const response = await request(server)
+        .put(`/api/jobPosts/${createdJobPost.job_post_id}`)
+        .send(updatedData);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body.job_title).toBe("Updated Title");
+    });
+
+    it("should return 404 if trying to update a non-existent job post", async () => {
+      const response = await request(server)
+        .put(`/api/jobPosts/${uuidv4()}`)
+        .send({ title: "New Title" });
+
+      expect(response.statusCode).toBe(404);
+    });
+  });
+
+  describe("DELETE /api/jobPosts/:id", () => {
+    it("should delete an existing job post and return 200", async () => {
+      const createdJobPost = await JobPost.create(mockJobPost);
+
+      const response = await request(server).delete(
+        `/api/jobPosts/${createdJobPost.job_post_id}`
+      );
+
+      expect(response.statusCode).toBe(200);
+    });
+
+    it("should return 404 if trying to delete a non-existent job post", async () => {
+      const response = await request(server).delete(
+        `/api/jobPosts/${uuidv4()}`
+      );
+
+      expect(response.statusCode).toBe(404);
+    });
+  });
 });
