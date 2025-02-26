@@ -1,0 +1,40 @@
+const {
+  getAll,
+  getOne,
+  create,
+  update,
+  deleteJobPost,
+  JobPost,
+  getByEmployer,
+} = require("../../db/models/jobPosts");
+const { v4: uuidv4 } = require("uuid");
+
+describe("Job Post Model Tests", () => {
+  let testJobPostId;
+  let testEmployerId;
+  let testUserId;
+
+  const mockJobPost = {
+    job_post_id: uuidv4(),
+    employer: 1,
+    user: 1,
+    start_date: "2023-01-10",
+    end_date: "2023-01-31",
+    job_title: "Software Developer",
+    description: "Seeking a skilled software developer for exciting projects",
+    requirements:
+      "Bachelor's degree in Computer Science, 3+ years of experience",
+    salary: 80000,
+    type_of_salary: "Annual",
+    country: "United States",
+    city: "New York",
+    type_of_work: "Full-time",
+    location: "Office-based",
+    created_at: "2023-01-15T10:30:00",
+    modified_at: "2023-01-20T14:45:00",
+  };
+
+  afterEach(async () => {
+    await JobPost.deleteMany({});
+  });
+});
