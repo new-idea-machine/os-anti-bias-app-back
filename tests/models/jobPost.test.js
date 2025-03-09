@@ -37,4 +37,14 @@ describe("Job Post Model Tests", () => {
   afterEach(async () => {
     await JobPost.deleteMany({});
   });
+
+  describe("Create Job Post", () => {
+    it("should create a job post", async () => {
+      const jobPost = await create(mockJobPost);
+      testJobPostId = jobPost.job_post_id;
+
+      expect(jobPost).toHaveProperty("job_title", mockJobPost.job_title);
+      expect(jobPost).toHaveProperty("description", mockJobPost.description);
+    });
+  });
 });
