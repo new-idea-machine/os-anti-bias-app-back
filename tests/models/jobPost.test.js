@@ -47,4 +47,19 @@ describe("Job Post Model Tests", () => {
       expect(jobPost).toHaveProperty("description", mockJobPost.description);
     });
   });
+
+  describe("Get All Job Posts", () => {
+    it("should return an array of job posts", async () => {
+      await create(mockJobPost);
+      const jobPosts = await getAll();
+
+      expect(jobPosts.length).toBe(1);
+      expect(jobPosts[0]).toHaveProperty("job_title", mockJobPost.job_title);
+    });
+
+    it("should return empty array if no job posts exist", async () => {
+      const jobPosts = await getAll();
+      expect(jobPosts.length).toBe(0);
+    });
+  });
 });
