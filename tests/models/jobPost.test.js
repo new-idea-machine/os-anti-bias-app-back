@@ -62,4 +62,21 @@ describe("Job Post Model Tests", () => {
       expect(jobPosts.length).toBe(0);
     });
   });
+
+  describe("Get Job Post by ID", () => {
+    it("should return an job post by ID", async () => {
+      const jobPost = await create(mockJobPost);
+      testJobPostId = jobPost.job_post_id;
+
+      const foundJobPost = await getOne(testJobPostId);
+      expect(foundJobPost).toHaveProperty(
+        "job_post_id",
+        mockJobPost.job_post_id
+      );
+    });
+
+    it("should throw an error if job post does not exist", async () => {
+      await expect(getOne(uuidv4())).rejects.toThrow("Job post is not found");
+    });
+  });
 });
