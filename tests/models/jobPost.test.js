@@ -79,4 +79,21 @@ describe("Job Post Model Tests", () => {
       await expect(getOne(uuidv4())).rejects.toThrow("Job post is not found");
     });
   });
+  describe("Update Job Post", () => {
+    it("should update an existing job post", async () => {
+      const jobPost = await create(mockJobPost);
+      testJobPostId = jobPost.job_post_id;
+
+      const updatedJobPost = await update(testJobPostId, {
+        job_title: "Updated Job Title",
+      });
+      expect(updatedJobPost).toHaveProperty("job_title", "Updated Job Title");
+    });
+
+    it("should throw an error if job post does not exist", async () => {
+      await expect(update(uuidv4(), { job_title: "New Name" })).rejects.toThrow(
+        "Job post is not found"
+      );
+    });
+  });
 });
