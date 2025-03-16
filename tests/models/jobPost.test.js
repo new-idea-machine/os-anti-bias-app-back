@@ -96,4 +96,27 @@ describe("Job Post Model Tests", () => {
       );
     });
   });
+  describe("Delete Job Post", () => {
+    it("should delete an job post by ID", async () => {
+      const jobPost = await create(mockJobPost);
+      testJobPostId = jobPost.job_post_id;
+
+      const deletedJobPost = await deleteJobPost(testJobPostId);
+      expect(deletedJobPost).toHaveProperty("job_title", mockJobPost.job_title);
+      expect(deletedJobPost).toHaveProperty(
+        "message",
+        "Job Post deleted successfully"
+      );
+
+      await expect(getOne(testJobPostId)).rejects.toThrow(
+        "Job post is not found"
+      );
+    });
+
+    it("should throw an error if job post does not exist", async () => {
+      await expect(deleteJobPost(uuidv4())).rejects.toThrow(
+        "Job Post item is not found"
+      );
+    });
+  });
 });
