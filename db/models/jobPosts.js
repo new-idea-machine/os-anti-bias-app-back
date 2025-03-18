@@ -127,7 +127,7 @@ const deleteJobPost = async (id) => {
 // GET JOBPOSTS BY EMPLOYER ID
 const getByEmployer = async (id) => {
   const jobPosts = await JobPost.find({ employer: id });
-  if (!jobPosts) throwError("Job posts are not found", 404);
+  if (jobPosts.length === 0) throwError("Job posts are not found", 404);
   return jobPosts;
 };
 

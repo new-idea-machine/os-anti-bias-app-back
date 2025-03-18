@@ -12,12 +12,11 @@ const { v4: uuidv4 } = require("uuid");
 describe("Job Post Model Tests", () => {
   let testJobPostId;
   let testEmployerId;
-  let testUserId;
 
   const mockJobPost = {
     job_post_id: uuidv4(),
-    employer: 1,
-    user: 1,
+    employer: "1",
+    user: "1",
     start_date: "2023-01-10",
     end_date: "2023-01-31",
     job_title: "Software Developer",
@@ -116,6 +115,22 @@ describe("Job Post Model Tests", () => {
     it("should throw an error if job post does not exist", async () => {
       await expect(deleteJobPost(uuidv4())).rejects.toThrow(
         "Job Post item is not found"
+      );
+    });
+  });
+  describe("Get Employer by Employer ID", () => {
+    it("should return job posts by employer ID", async () => {
+      await create(mockJobPost);
+      testEmployerId = mockJobPost.employer;
+      const jobPosts = await getByEmployer(testEmployerId);
+
+      expect(jobPosts[0]).toHaveProperty("employer", testEmployerId);
+      expect(jobPosts.length).toBe(1);
+    });
+
+    it("should throw an error if job post does not exist for employer ID", async () => {
+      await expect(getByEmployer(uuidv4())).rejects.toThrow(
+        "Job posts are not found"
       );
     });
   });
