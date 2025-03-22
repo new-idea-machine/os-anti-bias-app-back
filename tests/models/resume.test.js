@@ -103,4 +103,19 @@ describe("Resume Model Tests", () => {
       expect(resume).toHaveProperty("resume_id", mockResume.resume_id);
     });
   });
+
+  describe("Get All Resume", () => {
+    it("should return an array of resume", async () => {
+      await create(mockResume);
+      const resumes = await getAll();
+
+      expect(resumes.length).toBe(1);
+      expect(resumes[0]).toHaveProperty("title", mockResume.title);
+    });
+
+    it("should return empty array if no resumes exist", async () => {
+      const resumes = await getAll();
+      expect(resumes.length).toBe(0);
+    });
+  });
 });
