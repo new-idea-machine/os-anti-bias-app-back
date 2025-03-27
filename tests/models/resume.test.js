@@ -118,4 +118,18 @@ describe("Resume Model Tests", () => {
       expect(resumes.length).toBe(0);
     });
   });
+
+  describe("Get Resume by ID", () => {
+    it("should return a resume by ID", async () => {
+      const resume = await create(mockResume);
+      testResumeId = resume.resume_id;
+
+      const foundResume = await getOne(testResumeId);
+      expect(foundResume).toHaveProperty("resume_id", mockResume.resume_id);
+    });
+
+    it("should throw an error if resume does not exist", async () => {
+      await expect(getOne(uuidv4())).rejects.toThrow("Resume not found");
+    });
+  });
 });
