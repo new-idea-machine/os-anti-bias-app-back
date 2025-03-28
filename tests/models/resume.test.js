@@ -12,10 +12,11 @@ const { v4: uuidv4 } = require("uuid");
 
 describe("Resume Model Tests", () => {
   let testResumeId;
+  let testUserId;
 
   const mockResume = {
     resume_id: uuidv4(),
-    user: 1,
+    user: "1",
     title: "Frontend Developer",
     summary:
       "Creative frontend developer with a keen eye for design and user experience.",
@@ -130,6 +131,57 @@ describe("Resume Model Tests", () => {
 
     it("should throw an error if resume does not exist", async () => {
       await expect(getOne(uuidv4())).rejects.toThrow("Resume not found");
+    });
+  });
+
+  describe("Update Resume", () => {
+    it("should update an existing resume", async () => {
+      const resume = await create(mockResume);
+      testResumeId = resume.resume_id;
+
+      const updatedResume = await update(testResumeId, {
+        title: "Updated Title",
+      });
+      expect(updatedResume).toHaveProperty("title", "Updated Title");
+    });
+
+    it("should throw an error if resume does not exist", async () => {
+      await expect(update(uuidv4(), { title: "New Name" })).rejects.toThrow(
+        "Resume not found"
+      );
+    });
+  });
+  describe("Delete Resume", () => {
+    it("should delete a resume by ID", async () => {
+      const resume = await create(mockResume);
+      testResumeId = resume.resume_id;
+
+      const deletedResume = await deleteResume(testResumeId);
+      expect(deletedResume).toHaveProperty(
+        "message",
+        "Resume deleted successfully"
+      );
+
+      await expect(getOne(testResumeId)).rejects.toThrow("Resume not found");
+    });
+
+    it("should throw an error if resume does not exist", async () => {
+      await expect(deleteResume(uuidv4())).rejects.toThrow(
+        "Resume item is not found"
+      );
+    });
+  });
+  describe("Get Resume by User ID", () => {
+    it("should return resume by user ID", async () => {
+      await create(mockResume);
+      testUserId = mockResume.user;
+      const resume = await getByUser(testUserId);
+
+      expect(resume).toHaveProperty("user", testUserId);
+    });
+
+    it("should throw an error if resume does not exist for user ID", async () => {
+      await expect(getByUser(uuidv4())).rejects.toThrow("Resume not found");
     });
   });
 });
